@@ -7,6 +7,9 @@
 #include <opencv2/calib3d/calib3d.hpp>
 #include <opencv2/highgui/highgui.hpp>
 
+#include "func1.h"
+#include "func2.h"
+
 #ifndef _CRT_SECURE_NO_WARNINGS
 # define _CRT_SECURE_NO_WARNINGS
 #endif
@@ -14,117 +17,83 @@
 using namespace cv;
 using namespace std;
 
-
-
-Scalar ColorVectFunc(char color_name)
+void get4RandPts(Mat &img, Vector<Point2f> &pts, const string name )
 {
-    Scalar colorVector = Scalar( 0, 0, 0 );
-    switch (color_name)   {
-        case 'R' :
-            colorVector = Scalar( 0, 0, 255 );
-            break;
-        case 'G' :
-            colorVector = Scalar( 0, 255, 0 );
-            break;
-        case 'B' :
-            colorVector = Scalar( 255, 0, 0 );
-            break;
-        case 'M' :
-            colorVector = Scalar( 255, 0, 255 );
-            break;
-        case 'Y' :
-            colorVector = Scalar( 0, 255, 255 );
-            break;
-        case 'K' :
-            colorVector = Scalar( 0, 0, 0 );
-            break;
-    }
-    return colorVector;
-}
-
-
-
-void DrawCircleFunc( Mat img, Point center, char color )
-{
-    int thickness = 2;
-    int lineType = 8;
-    circle(img, center, 5, ColorVectFunc(color), thickness, lineType );
-}
-
-void DrawLineFunc( Mat img, Point2f pt1, Point2f pt2, char color )
-{
-    int thickness = 2;
-    int lineType = 8;
-    int lineShift = 0;
-
-    line(img, pt1, pt2, ColorVectFunc(color), thickness, lineType, lineShift );
-}
-
-void onMouseFunc(int event, int x, int y, int flags, void* user_data)
-{
-    if  ( event == EVENT_LBUTTONDOWN )
+    imshow( name, img );                   // Show image.
+    for(auto it = pts.begin(); it != pts.end(); ++it)
     {
-        Point2f *params = (Point2f*)user_data;
-        params->x  = x;
-        params->y  = y;
+        setMouseCallback( name, onMouseFunc, (void*)it);
+        waitKey(0);
+        drawCircleFunc( img, *it, 'B' );
+        imshow( name, img );
     }
 }
 
-void imgRotateFunc(Mat &src, Mat &dst, double angle)
-{
-    int length = max(src.cols, src.rows);
-    Point2f pt(length/2., length/2.);
-    Mat r = getRotationMatrix2D(pt, angle, 1.0);
 
-    warpAffine(src, dst, r, Size(length, length));
-}
+
+
+
+
 
 
 
 
 int main(int argc, char* argv[])
 {
+     //selectProgFunc();   //TBD
+
 
     //=====Loading image=====
-    if( argc != 2)
-    {
-        cout <<" <Incorrect Usage> you should input : ./Homography2D your_image.jpg" << endl;
+    if( argc != 3)  {
+        cout << "<Incorrect Usage>  valid input should be .\RunningTrack 1st.jpg 2nd.jpg" << endl;
         return -1;
     }
 
-    Mat img_original;
-    img_original = imread(argv[1], CV_LOAD_IMAGE_COLOR);   // Read the file
-
-    if(! img_original.data )                              // Check for invalid input
-    {
+    Mat img_ori_1, img_ori_2;
+    img_ori_1 = imread(argv[1], CV_LOAD_IMAGE_COLOR);   // Read the 1st file
+    img_ori_2 = imread(argv[2], CV_LOAD_IMAGE_COLOR);   // Read the 2nd file
+    if( !img_ori_1.data || !img_ori_2.data)   {         // Check for invalid input
         cout <<  " <Incorrect Usage> Could not open or find the image" << endl ;
         return -1;
     }
 
+    //=====Display 1st image=====
+    string name_1 = "The 1st image";
+    Mat img_painted_1 = img_ori_1.clone();          // img_painted & img_original are independent.
+    namedWindow( name_1, WINDOW_AUTOSIZE );      // Create a window for display.
 
-    //=====Display image=====
-    string name_img = "Display the image";
-    Mat img_painted = img_original.clone();          // img_painted & img_original are independent.
-    namedWindow( name_img, CV_WINDOW_KEEPRATIO );      // Create a window for display.
-    imshow( name_img, img_original );                   // Show our image inside it.
+    //=====Display 2nd image=====
+    string name_2 = "The 2nd image";
+    Mat img_painted_2 = img_ori_2.clone();          // img_painted & img_original are independent.
+    namedWindow( name_2, WINDOW_AUTOSIZE );      // Create a window for display.
 
     //=====Get points by mouse clicking=====
-    Point2f selected_pts[4];
-    int i;
+    int i = 4;
+    Vector<Point2f> pts_vertx_1(i), pts_vertx_2(i);
+    get4RandPts(img_painted_1, pts_vertx_1, name_1 );
+    get4RandPts(img_painted_2, pts_vertx_2, name_2 );
 
-    for(i = 0; i<4; i++)
-    {
-        setMouseCallback( name_img, onMouseFunc, (void*)&selected_pts[i]);
-        waitKey(0);
 
-        DrawCircleFunc( img_painted, selected_pts[i], 'B' );
-        imshow( name_img, img_painted );
-    }
+
+
+
+    /*
+
+
+
+
+
+
+
+
+
+
+
     //=====Draw lines=====
     for(i = 0; i<4; i++)
     {
         int end_pt_num = i==3 ? 0 : i+1;
-        DrawLineFunc( img_painted, selected_pts[i] , selected_pts[end_pt_num], 'G');
+        drawLineFunc( img_painted, selected_pts[i] , selected_pts[end_pt_num], 'G');
         imshow( name_img, img_painted );
     }
 
@@ -173,6 +142,8 @@ int main(int argc, char* argv[])
 
     imwrite( "./OriginalImg.jpg", img_painted );
     imwrite( "./BirdViewImg.jpg", img_trans_rotated );
+
+    */
 
     return 0;
 }

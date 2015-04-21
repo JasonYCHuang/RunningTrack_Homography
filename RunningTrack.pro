@@ -2,8 +2,11 @@ TEMPLATE = app
 CONFIG += console
 CONFIG -= app_bundle
 CONFIG -= qt
+CONFIG += c++11
 
-SOURCES += main.cpp
+SOURCES += main.cpp \
+    func1.cpp \
+    func2.cpp
 
 unix:LIBS += `pkg-config opencv --libs`
 
@@ -25,5 +28,9 @@ win32:LIBS+= C:\Qt\OpenCV249MinGw\lib\libopencv_calib3d249.dll.a\
                C:\Qt\OpenCV249MinGw\lib\libopencv_objdetect249.dll.a\
                C:\Qt\OpenCV249MinGw\lib\libopencv_ocl249.dll.a\
                C:\Qt\OpenCV249MinGw\lib\libopencv_video249.dll.a\
+
+HEADERS += \
+    func1.h \
+    func2.h
 
 
