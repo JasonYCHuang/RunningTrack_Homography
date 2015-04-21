@@ -16,20 +16,48 @@ using namespace std;
 
 
 
-
-void DrawCircleFunc( Mat img, Point center )
+Scalar ColorVectFunc(char color_name)
 {
-    int thickness = 2;
-    int lineType = 8;
-    circle(img, center, 5, Scalar( 255, 0, 0 ), thickness, lineType );
+    Scalar colorVector = Scalar( 0, 0, 0 );
+    switch (color_name)   {
+        case 'R' :
+            colorVector = Scalar( 0, 0, 255 );
+            break;
+        case 'G' :
+            colorVector = Scalar( 0, 255, 0 );
+            break;
+        case 'B' :
+            colorVector = Scalar( 255, 0, 0 );
+            break;
+        case 'M' :
+            colorVector = Scalar( 255, 0, 255 );
+            break;
+        case 'Y' :
+            colorVector = Scalar( 0, 255, 255 );
+            break;
+        case 'K' :
+            colorVector = Scalar( 0, 0, 0 );
+            break;
+    }
+    return colorVector;
 }
 
-void DrawLineFunc( Mat img, Point2f pt1, Point2f pt2 )
+
+
+void DrawCircleFunc( Mat img, Point center, char color )
 {
     int thickness = 2;
     int lineType = 8;
-    int lineshift = 0;
-    line(img, pt1, pt2,  Scalar( 0, 255, 0 ), thickness, lineType, lineshift );
+    circle(img, center, 5, ColorVectFunc(color), thickness, lineType );
+}
+
+void DrawLineFunc( Mat img, Point2f pt1, Point2f pt2, char color )
+{
+    int thickness = 2;
+    int lineType = 8;
+    int lineShift = 0;
+
+    line(img, pt1, pt2, ColorVectFunc(color), thickness, lineType, lineShift );
 }
 
 void onMouseFunc(int event, int x, int y, int flags, void* user_data)
@@ -89,14 +117,14 @@ int main(int argc, char* argv[])
         setMouseCallback( name_img, onMouseFunc, (void*)&selected_pts[i]);
         waitKey(0);
 
-        DrawCircleFunc( img_painted, selected_pts[i] );
+        DrawCircleFunc( img_painted, selected_pts[i], 'B' );
         imshow( name_img, img_painted );
     }
     //=====Draw lines=====
     for(i = 0; i<4; i++)
     {
         int end_pt_num = i==3 ? 0 : i+1;
-        DrawLineFunc( img_painted, selected_pts[i] , selected_pts[end_pt_num]);
+        DrawLineFunc( img_painted, selected_pts[i] , selected_pts[end_pt_num], 'G');
         imshow( name_img, img_painted );
     }
 
