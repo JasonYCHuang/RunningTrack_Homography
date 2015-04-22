@@ -25,5 +25,7 @@
     void drawLineFunc( Mat img, Point2f pt1, Point2f pt2, char color );
     void onMouseFunc(int event, int x, int y, int , void* user_data);
     void imgRotateFunc(Mat &src, Mat &dst, double angle);
+    void get4RandPts(Mat &img, vector<Point2f> &pts, const string name );
+    void hgTransformFunc(Mat &ori, Mat &ref, Mat &target, Mat &h_matrix, const string n1, const string n2);
 
 #endif // FUNC2_H

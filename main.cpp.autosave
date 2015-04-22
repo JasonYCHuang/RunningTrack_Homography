@@ -18,11 +18,9 @@ using namespace cv;
 using namespace std;
 
 
-
 int main(int argc, char* argv[])
 {
      //selectProgFunc();   //TBD
-
 
     //=====Loading image=====
     if( argc != 3)  {
@@ -51,8 +49,6 @@ int main(int argc, char* argv[])
     Mat img_transformed, homography_matrix;
 
     hgTransformFunc(img_painted_1,img_painted_2, img_transformed, homography_matrix, name_1, name_2);
-
-
 
     string name_transformed = "The transformed image";
     namedWindow( name_transformed, WINDOW_AUTOSIZE );

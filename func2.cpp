@@ -62,7 +62,7 @@ void drawLineFunc( Mat img, Point2f pt1, Point2f pt2, char color )
     line(img, pt1, pt2, colorVectFunc(color), thickness, lineType, lineShift );
 }
 
-void onMouseFunc(int event, int x, int y, int , void* user_data)
+void onMouseFunc(int event, int x, int y, int , void *user_data)
 {
     if  ( event == EVENT_LBUTTONDOWN )
     {
@@ -80,3 +80,35 @@ void imgRotateFunc(Mat &src, Mat &dst, double angle)
 
     warpAffine(src, dst, r, Size(length, length));
 }
+
+
+void get4RandPts(Mat &img, vector<Point2f> &pts, const string name )
+{
+    imshow( name, img );                   // Show image.
+    for(auto it = pts.begin(); it != pts.end(); ++it)   {   //=====Get points=====
+        setMouseCallback( name, onMouseFunc, (void*) &*it );   // solve "iterator can not be converted to void*"
+        waitKey(0);
+        drawCircleFunc( img, *it, 'B' );
+        imshow( name, img );
+    }
+    for(auto it = pts.begin(); it != pts.end(); ++it)   {   //=====Draw lines=====
+        auto next = it+1 != pts.end() ? it+1 : pts.begin();
+        drawLineFunc( img, *it , *next, 'G');
+        imshow( name, img );
+    }
+}
+
+void hgTransformFunc(Mat &ori, Mat &ref, Mat &target, Mat &h_matrix, const string n1, const string n2)
+{
+    int i = 4;   //get 4 pts
+    vector<Point2f> pts_vertx_ori(i), pts_vertx_ref(i);
+    get4RandPts(ori, pts_vertx_ori, n1);
+    get4RandPts(ref, pts_vertx_ref, n2);
+
+    h_matrix = findHomography(pts_vertx_ori, pts_vertx_ref, 0);
+
+    warpPerspective(ori, target, h_matrix, target.size());
+
+    imgRotateFunc(target, target, 0);
+}
+
