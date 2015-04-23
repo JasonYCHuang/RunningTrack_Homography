@@ -15,7 +15,7 @@
 
 using namespace cv;
 using namespace std;
-
+//-------------------------------------------------------
 
 
 Scalar colorVectFunc(char color_name)

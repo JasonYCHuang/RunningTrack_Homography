@@ -9,6 +9,7 @@
 
 #include "func1.h"
 #include "hgBy4Pts.h"
+#include "rotByVanPts.h"
 
 #ifndef _CRT_SECURE_NO_WARNINGS
 # define _CRT_SECURE_NO_WARNINGS
@@ -17,15 +18,12 @@
 using namespace cv;
 using namespace std;
 
-
 int main(int argc, char* argv[])
 {
     //selectProgFunc();   //TBD
+    //projectHgTra4Pts();   //TBD
 
-
-    projectHgTra4Pts();
-
-
+    projectRotByVanPts();
 
 
 

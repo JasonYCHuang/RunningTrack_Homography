@@ -15,6 +15,7 @@
 
 using namespace cv;
 using namespace std;
+//-------------------------------------------------------
 
 void optionsFunc(char &is, bool &ci)
 {

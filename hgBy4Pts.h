@@ -10,14 +10,13 @@
     #include <opencv2/calib3d/calib3d.hpp>
     #include <opencv2/highgui/highgui.hpp>
 
-    #include "func1.h"
-
     #ifndef _CRT_SECURE_NO_WARNINGS
     # define _CRT_SECURE_NO_WARNINGS
     #endif
 
     using namespace cv;
     using namespace std;
+    //-------------------------------------------------------
 
     Scalar colorVectFunc(char color_name);
     void drawCircleFunc( Mat img, Point center, char color );

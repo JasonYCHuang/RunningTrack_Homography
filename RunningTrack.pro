@@ -6,7 +6,8 @@ CONFIG += c++11
 
 SOURCES += main.cpp \
     func1.cpp \
-    hgBy4Pts.cpp
+    hgBy4Pts.cpp \
+    rotByVanPts.cpp
 
 unix:LIBS += `pkg-config opencv --libs`
 
@@ -31,6 +32,7 @@ win32:LIBS+= C:\Qt\OpenCV249MinGw\lib\libopencv_calib3d249.dll.a\
 
 HEADERS += \
     func1.h \
-    hgBy4Pts.h
+    hgBy4Pts.h \
+    rotByVanPts.h
 
 
