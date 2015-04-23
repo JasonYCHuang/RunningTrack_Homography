@@ -11,7 +11,6 @@
     #include <opencv2/highgui/highgui.hpp>
 
     #include "func1.h"
-    #include "func2.h"
 
     #ifndef _CRT_SECURE_NO_WARNINGS
     # define _CRT_SECURE_NO_WARNINGS
@@ -27,5 +26,7 @@
     void imgRotateFunc(Mat &src, Mat &dst, double angle);
     void get4RandPts(Mat &img, vector<Point2f> &pts, const string name );
     void hgTransformFunc(Mat &ori, Mat &ref, Mat &target, Mat &h_matrix, const string n1, const string n2);
+    void hgTransBy4RandPtsFunc(const string name_ori, const string name_ref);
+    void projectHgTra4Pts();
 
 #endif // FUNC2_H

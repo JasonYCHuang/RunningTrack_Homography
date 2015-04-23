@@ -7,7 +7,7 @@
 #include <opencv2/calib3d/calib3d.hpp>
 #include <opencv2/highgui/highgui.hpp>
 
-#include "func2.h"
+#include "hgBy4Pts.h"
 
 #ifndef _CRT_SECURE_NO_WARNINGS
 # define _CRT_SECURE_NO_WARNINGS
@@ -110,5 +110,49 @@ void hgTransformFunc(Mat &ori, Mat &ref, Mat &target, Mat &h_matrix, const strin
     warpPerspective(ori, target, h_matrix, target.size());
 
     imgRotateFunc(target, target, 0);
+}
+
+
+
+void hgTransBy4RandPtsFunc(const string name_ori, const string name_ref)
+{
+    Mat img_ori, img_ref;
+    img_ori = imread(name_ori, CV_LOAD_IMAGE_COLOR);   // Read the 1st file
+    img_ref = imread(name_ref, CV_LOAD_IMAGE_COLOR);   // Read the 2nd file
+    if( !img_ori.data || !img_ref.data)   {         // Check for invalid input
+        cout <<  " <Incorrect Usage> Could not open or find the image" << endl ;
+    }
+    else    {
+        //=====Display 1st image=====
+        Mat img_painted_ori = img_ori.clone();          // img_painted & img_original are independent.
+        namedWindow( name_ori, WINDOW_AUTOSIZE );      // Create a window for display.
+
+        //=====Display 2nd image=====
+        Mat img_painted_ref = img_ref.clone();          // img_painted & img_original are independent.
+        namedWindow( name_ref, WINDOW_AUTOSIZE );      // Create a window for display.
+
+        Mat img_transformed, homography_matrix;
+        hgTransformFunc(img_painted_ori,img_painted_ref, img_transformed, homography_matrix, name_ori, name_ref);
+
+        string name_transformed = "The transformed image";
+        namedWindow( name_transformed, WINDOW_AUTOSIZE );
+        imshow( name_transformed, img_transformed );
+
+        waitKey(0);
+
+        imwrite( "./HT_OriImg.jpg", img_painted_ori );
+        imwrite( "./HT_RefImg.jpg", img_painted_ref );
+        imwrite( "./HT_TransImg.jpg", img_transformed );
+    }
+}
+
+void projectHgTra4Pts()
+{
+    string name_ori, name_ref;
+    cout << "=> Input the name of the original image." << endl;
+    cin >> name_ori;
+    cout << "=> Input the name of the reference image." << endl;
+    cin >> name_ref;
+    hgTransBy4RandPtsFunc(name_ori, name_ref);
 }
 
