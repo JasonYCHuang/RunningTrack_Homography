@@ -43,8 +43,10 @@ Point2f getVanishingPts(Mat &src, string name )
     get4RandPts(src, selected_pts, name );
 
     //=====Draw center=====
-    drawCircleFunc( src, IMG_CENTER, 'R' );
-    drawCircleFunc( src, CAM_CENTER, 'M' );
+    drawCircleFunc( src, IMG_CENTER, 'M' );
+    putText(src, "IMG_CENTER", IMG_CENTER, FONT_HERSHEY_PLAIN, 1, colorVectFunc('M'), 2, 8, false);
+    drawCircleFunc( src, CAM_CENTER, 'R' );
+    putText(src, "CAM_CENTER", CAM_CENTER, FONT_HERSHEY_PLAIN, 1, colorVectFunc('R'), 2, 8, false );
     //=====Draw and Calc lines=====
     double m[2], b[2];     // y = mx+b
     for(i = 0; i<num_pts; i+=2)
@@ -66,6 +68,33 @@ Point2f getVanishingPts(Mat &src, string name )
 
     return vanishing_pts;
 }
+
+double calcAngleFunc(const Mat &direction1, const Mat &direction2, const char s)
+{
+    Mat d1 = direction1.clone();
+    Mat d2 = direction2.clone();
+    switch (s) {
+        case 'P':
+            d1.row(0) = 0.0;
+            d2.row(0) = 0.0;
+            break;
+        case 'Y':
+            d1.row(1) = 0.0;
+            d2.row(1) = 0.0;
+            break;
+        case 'R':
+            d1.row(2) = 0.0;
+            d2.row(2) = 0.0;
+            break;
+        default:
+            break;
+    }
+    double cos_angle = d1.dot(d2)/norm(d1)/norm(d2);
+    double angle = acos(cos_angle)*180/3.14159;
+    return angle;
+}
+
+
 
 void rotByVarPtsFunc(const string name)
 {
@@ -89,15 +118,23 @@ void rotByVarPtsFunc(const string name)
         Mat d_ori    = inv_k_param*v_homo_coord_ori;
         Mat d_center = inv_k_param*v_homo_coord_center;
 
-        //=====Angle between the 2 vectors=====
-        double cos_angle = d_ori.dot(d_center)/norm(d_ori)/norm(d_center);
-        double angle = acos(cos_angle)*180/3.14159;
-        cout << "angle " << angle << endl;
+        //=====Pitch, Yaw, Roll======================
+        double pitch_angle = calcAngleFunc(d_ori, d_center, 'P');
+        double yaw_angle   = calcAngleFunc(d_ori, d_center, 'Y');
+        double roll_angle  = calcAngleFunc(d_ori, d_center, 'R');
+        double std_angle   = calcAngleFunc(d_ori, d_center, 's');
+
+        cout << "pitch_angle = " << pitch_angle << "(deg)" << endl;
+        cout << "yaw_angle   = " << yaw_angle   << "(deg)" << endl;
+        cout << "roll_angle  = " << roll_angle  << "(deg)" << endl;
+        cout << "std_angle   = " << std_angle   << "(deg)" << endl;
 
         cout << "-----------ori-------------" << endl;
         cout << d_ori/norm(d_ori) << endl;
         cout << "-----------center-------------" << endl;
         cout << d_center << endl;
+
+        imwrite( "./Rot.jpg", img );
 
         waitKey(0);
     }

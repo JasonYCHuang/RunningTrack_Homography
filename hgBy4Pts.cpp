@@ -69,6 +69,7 @@ void onMouseFunc(int event, int x, int y, int , void *user_data)
         Point2f *params = (Point2f*)user_data;
         params->x  = x;
         params->y  = y;
+        //cout << x << "/" << y << endl;
     }
 }
 

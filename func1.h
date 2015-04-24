@@ -13,7 +13,8 @@
     using namespace std;
 
     const Point2f  CAM_CENTER(442.21533, 284.83506);
-    const Point2f  IMG_CENTER(442.21533, 284.83506); //(400, 300);
+    const Point2f  IMG_CENTER(442.21533, 284.83506);  //(400, 300);
+
     const double  FOCUS_1 = 801.08310;
     const double  FOCUS_2 = 805.38312;
 

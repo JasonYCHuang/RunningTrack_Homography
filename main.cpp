@@ -25,8 +25,6 @@ int main(int argc, char* argv[])
 
     projectRotByVanPts();
 
-
-
     return 0;
 }
 
