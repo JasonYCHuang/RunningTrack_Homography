@@ -20,10 +20,10 @@ using namespace std;
 
 int main(int argc, char* argv[])
 {
-    //selectProgFunc();   //TBD
-    //projectHgTra4Pts();   //TBD
+    selectProgFunc();   //TBD
 
-    projectRotByVanPts();
+
+
 
     return 0;
 }

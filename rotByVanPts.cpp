@@ -95,7 +95,6 @@ double calcAngleFunc(const Mat &direction1, const Mat &direction2, const char s)
 }
 
 
-
 void rotByVarPtsFunc(const string name)
 {
     Mat img;
@@ -137,6 +136,7 @@ void rotByVarPtsFunc(const string name)
         imwrite( "./Rot.jpg", img );
 
         waitKey(0);
+        destroyAllWindows();
     }
 }
 

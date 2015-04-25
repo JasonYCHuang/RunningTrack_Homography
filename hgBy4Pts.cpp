@@ -139,11 +139,13 @@ void hgTransBy4RandPtsFunc(const string name_ori, const string name_ref)
         namedWindow( name_transformed, WINDOW_AUTOSIZE );
         imshow( name_transformed, img_transformed );
 
-        waitKey(0);
-
         imwrite( "./HT_OriImg.jpg", img_painted_ori );
         imwrite( "./HT_RefImg.jpg", img_painted_ref );
         imwrite( "./HT_TransImg.jpg", img_transformed );
+
+        waitKey(0);
+
+        destroyAllWindows();
     }
 }
 
