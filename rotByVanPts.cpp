@@ -69,7 +69,7 @@ Point2f getVanishingPts(Mat &src, string name )
     return vanishing_pts;
 }
 
-double calcAngleFunc(const Mat &direction1, const Mat &direction2, const char s)
+double calcProjAngleFunc(const Mat &direction1, const Mat &direction2, const char s)
 {
     Mat d1 = direction1.clone();
     Mat d2 = direction2.clone();
@@ -90,8 +90,16 @@ double calcAngleFunc(const Mat &direction1, const Mat &direction2, const char s)
             break;
     }
     double cos_angle = d1.dot(d2)/norm(d1)/norm(d2);
-    double angle = acos(cos_angle)*180/3.14159;
+    double angle = acos(cos_angle)*TO_DEG;
     return angle;
+}
+
+void calcRotAngleFunc(const Mat &unit_vector, double &pitch, double &yaw)
+{
+    Mat u_d1 = unit_vector.clone();
+    pitch = asin(-u_d1.at<double>(1,0))*TO_DEG;
+    double tmp_y = u_d1.at<double>(2,0)/cos(pitch*TO_RAD);
+    yaw = acos(tmp_y)*TO_DEG;
 }
 
 
@@ -116,22 +124,16 @@ void rotByVarPtsFunc(const string name)
         invert(k_param, inv_k_param);
         Mat d_ori    = inv_k_param*v_homo_coord_ori;
         Mat d_center = inv_k_param*v_homo_coord_center;
+        d_ori = d_ori/norm(d_ori);           //get unit vector
+        d_center = d_center/norm(d_center);
 
         //=====Pitch, Yaw, Roll======================
-        double pitch_angle = calcAngleFunc(d_ori, d_center, 'P');
-        double yaw_angle   = calcAngleFunc(d_ori, d_center, 'Y');
-        double roll_angle  = calcAngleFunc(d_ori, d_center, 'R');
-        double std_angle   = calcAngleFunc(d_ori, d_center, 's');
+        double pitch_angle, yaw_angle;
+        calcRotAngleFunc(d_ori, pitch_angle, yaw_angle);
 
+        cout << "Assume roll = 0(deg)" << endl;
         cout << "pitch_angle = " << pitch_angle << "(deg)" << endl;
         cout << "yaw_angle   = " << yaw_angle   << "(deg)" << endl;
-        cout << "roll_angle  = " << roll_angle  << "(deg)" << endl;
-        cout << "std_angle   = " << std_angle   << "(deg)" << endl;
-
-        cout << "-----------ori-------------" << endl;
-        cout << d_ori/norm(d_ori) << endl;
-        cout << "-----------center-------------" << endl;
-        cout << d_center << endl;
 
         imwrite( "./Rot.jpg", img );
 
@@ -147,4 +149,5 @@ void projectRotByVanPts()
     cout << "=> Input the name of the original image." << endl;
     cin >> name_ori;
     rotByVarPtsFunc(name_ori);
+    cout << endl << endl << endl;
 }

@@ -157,5 +157,6 @@ void projectHgTra4Pts()
     cout << "=> Input the name of the reference image." << endl;
     cin >> name_ref;
     hgTransBy4RandPtsFunc(name_ori, name_ref);
+    cout << endl << endl << endl;
 }
 

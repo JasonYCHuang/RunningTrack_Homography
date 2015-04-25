@@ -18,6 +18,9 @@
     const double  FOCUS_1 = 801.08310;
     const double  FOCUS_2 = 805.38312;
 
+    const double  TO_RAD = 3.14159/180;
+    const double  TO_DEG = 180/3.14159;
+
     void optionsFunc(char &is, bool &ci);
     void selectProgFunc();
 

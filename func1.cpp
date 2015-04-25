@@ -22,7 +22,6 @@ using namespace std;
 void optionsFunc(char &is, bool &ci)
 {
     if (ci)     {
-        cout << endl << endl << endl;
         cout << "-----Please select the program you want to execute!-----" << endl;
         cout << "[1] Homography transformation from 4-random-points of 2 images." << endl;
         cout << "[2] Homography transformation from 4-vertex to fit into a rectangle." << endl;
