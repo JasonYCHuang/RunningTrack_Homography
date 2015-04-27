@@ -1,5 +1,5 @@
-#ifndef HGBY4PTS_H
-#define HGBY4PTS_H
+#ifndef LIB_MATH_H
+#define LIB_MATH_H
 
 #include <iostream>
 #include <sstream>
@@ -17,9 +17,7 @@
 using namespace cv;
 using namespace std;
 //-------------------------------------------------------
-void get4RandPts(Mat &img, vector<Point2f> &pts, const string name );
-void hgTransformFunc(Mat &ori, Mat &ref, Mat &target, Mat &h_matrix, const string n1, const string n2);
-void hgTransBy4RandPtsFunc(const string name_ori, const string name_ref);
-void projectHgTra4Pts();
+double slopeFunc(Point2f pt1, Point2f pt2);
+double intersectFunc(Point2f pt1, Point2f pt2);
 
-#endif // HGBY4PTS_H
+#endif // LIB_MATH_H

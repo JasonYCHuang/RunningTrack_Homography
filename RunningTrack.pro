@@ -5,9 +5,10 @@ CONFIG -= qt
 CONFIG += c++11
 
 SOURCES += main.cpp \
-    func1.cpp \
     hgBy4Pts.cpp \
-    rotByVanPts.cpp
+    rotByVanPts.cpp \
+    lib_misc.cpp \
+    lib_math.cpp
 
 unix:LIBS += `pkg-config opencv --libs`
 
@@ -31,8 +32,9 @@ win32:LIBS+= C:\Qt\OpenCV249MinGw\lib\libopencv_calib3d249.dll.a\
                C:\Qt\OpenCV249MinGw\lib\libopencv_video249.dll.a\
 
 HEADERS += \
-    func1.h \
     hgBy4Pts.h \
-    rotByVanPts.h
+    rotByVanPts.h \
+    lib_misc.h \
+    lib_math.h
 
 
