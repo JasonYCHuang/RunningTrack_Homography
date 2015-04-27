@@ -64,6 +64,7 @@ Point2f getVanishingPts(Mat &src, string name )
 
     drawLineFunc( src, selected_pts[1] ,vanishing_pts, 'Y');
     drawLineFunc( src, selected_pts[2] ,vanishing_pts, 'R');
+
     imshow( name, src);
 
     return vanishing_pts;
@@ -129,11 +130,19 @@ void rotByVarPtsFunc(const string name)
 
         //=====Pitch, Yaw, Roll======================
         double pitch_angle, yaw_angle;
-        calcRotAngleFunc(d_ori, pitch_angle, yaw_angle);
+        calcRotAngleFunc(d_ori, pitch_angle, yaw_angle);   //calc angle from rotation matrix.
 
         cout << "Assume roll = 0(deg)" << endl;
         cout << "pitch_angle = " << pitch_angle << "(deg)" << endl;
         cout << "yaw_angle   = " << yaw_angle   << "(deg)" << endl;
+
+        cout << "====================================" << endl;
+        cout << d_ori << endl;
+
+        //line(src, V_TOP, V_BOT, Scalar( 255, 0, 255 ), 1, 8, 0 );  //Test
+        //line(src, H_LFT, H_RIT, Scalar( 255, 0, 255 ), 1, 8, 0 );  //Test
+        line(img, vanish_pts_ori, CAM_CENTER, Scalar( 255, 0, 255 ), 1, 8, 0 );  //Test
+        imshow( name, img );
 
         imwrite( "./Rot.jpg", img );
 
