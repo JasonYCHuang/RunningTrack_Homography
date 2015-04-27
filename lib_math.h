@@ -19,5 +19,13 @@ using namespace std;
 //-------------------------------------------------------
 double slopeFunc(Point2f pt1, Point2f pt2);
 double intersectFunc(Point2f pt1, Point2f pt2);
+Point2f calcVanishingPts(Mat &src,  const vector<Point2f> pts, string name);
+void calcRotAngleFunc(const Mat &unit_vector, double &pitch, double &yaw);
+
+//----Legacy function, useless now--------
+double calcProjAngleFunc(const Mat &direction1, const Mat &direction2, const char s);
 
 #endif // LIB_MATH_H
+
+
+

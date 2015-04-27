@@ -19,29 +19,12 @@ using namespace cv;
 using namespace std;
 //-------------------------------------------------------
 
-
-void get4RandPts(Mat &img, vector<Point2f> &pts, const string name )
-{
-    imshow( name, img );                   // Show image.
-    for(auto it = pts.begin(); it != pts.end(); ++it)   {   //=====Get points=====
-        setMouseCallback( name, onMouseFunc, (void*) &*it );   // solve "iterator can not be converted to void*"
-        waitKey(0);
-        drawCircleFunc( img, *it, 'B' );
-        imshow( name, img );
-    }
-    for(auto it = pts.begin(); it != pts.end(); ++it)   {   //=====Draw lines=====
-        auto next = it+1 != pts.end() ? it+1 : pts.begin();
-        drawLineFunc( img, *it , *next, 'G');
-        imshow( name, img );
-    }
-}
-
 void hgTransformFunc(Mat &ori, Mat &ref, Mat &target, Mat &h_matrix, const string n1, const string n2)
 {
     int i = 4;   //get 4 pts
     vector<Point2f> pts_vertx_ori(i), pts_vertx_ref(i);
-    get4RandPts(ori, pts_vertx_ori, n1);
-    get4RandPts(ref, pts_vertx_ref, n2);
+    getPtsLocFunc(ori, pts_vertx_ori, n1);
+    getPtsLocFunc(ref, pts_vertx_ref, n2);
 
     h_matrix = findHomography(pts_vertx_ori, pts_vertx_ref, 0);
 

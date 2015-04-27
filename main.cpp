@@ -28,6 +28,7 @@ extern const double  TO_DEG = 180/3.14159;
 #include "lib_math.h"
 #include "hgBy4Pts.h"
 #include "rotByVanPts.h"
+#include "vanLine.h"
 
 #ifndef _CRT_SECURE_NO_WARNINGS
 # define _CRT_SECURE_NO_WARNINGS
@@ -44,6 +45,7 @@ char optionsFunc(bool &ci)
         cout << "[2] Homography transformation from 4-vertex to fit into a rectangle." << endl;
         cout << "[3] Homography transformation of lines." << endl;
         cout << "[4] Rotation matrix from vanishing points." << endl;
+        cout << "[5] Get roll angle from a vanishing line." << endl;
         cout << "-----Input a number or '0' to terminate the program-----" << endl;
     }
     else    {
@@ -74,6 +76,9 @@ int main()
                 break;
             case '4':
                 projectRotByVanPts();
+                break;
+            case '5':
+                projectVanLine();
                 break;
             case '0':
                 cout << "See You Next Time!!" << endl;

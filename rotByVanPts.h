@@ -19,19 +19,11 @@ using namespace std;
 
 extern const Point2f  CAM_CENTER;
 extern const Point2f  IMG_CENTER;
-extern const Point2f  V_TOP;
-extern const Point2f  V_BOT;
-extern const Point2f  H_LFT;
-extern const Point2f  H_RIT;
 extern const double  FOCUS_1;
 extern const double  FOCUS_2;
 extern const double  TO_RAD;
 extern const double  TO_DEG;
 //-------------------------------------------------------
-
-Point2f getVanishingPts(Mat &src, string name );
-double calcProjAngleFunc(const Mat &direction1, const Mat &direction2, const char s);
-void calcRotAngleFunc(const Mat &unit_vector, double &pitch, double &yaw);
 void rotByVarPtsFunc(const string name);
 void projectRotByVanPts();
 
