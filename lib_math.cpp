@@ -34,7 +34,7 @@ double intersectFunc(Point2f pt1, Point2f pt2)
     return intersect;
 }
 
-Point2f calcVanishingPts(Mat &src,  const vector<Point2f> pts, string name)
+Point2f calcVanPtsFunc(Mat &src,  const vector<Point2f> pts, string name)
 {
     int num_pts = pts.size();
     //=====Calc and draw lines=====

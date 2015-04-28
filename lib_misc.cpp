@@ -108,7 +108,7 @@ void getPtsLocFunc(Mat &img, vector<Point2f> &pts, const string name )
             imshow( name, img );
         }
     }
-    if(pts.size() == 6)   {
+    else   {
         for(auto it = pts.begin(); it != pts.end(); ++it)   {   //=====Draw lines=====
             auto next = it+1;
             if( (it-pts.begin())%2 == 0)

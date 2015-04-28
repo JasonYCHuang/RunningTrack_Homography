@@ -34,7 +34,7 @@ void rotByVarPtsFunc(const string name)
         //=====Calc vanishing point & Set homo coordinate=====
         vector<Point2f> selected_pts(4);
         getPtsLocFunc(img, selected_pts, name);
-        Point2f vanish_pts_ori = calcVanishingPts(img, selected_pts, name);
+        Point2f vanish_pts_ori = calcVanPtsFunc(img, selected_pts, name);
 
         Mat v_homo_coord_ori    = (Mat_<double>(3, 1) << vanish_pts_ori.x, vanish_pts_ori.y, 1);
         Mat v_homo_coord_center = (Mat_<double>(3, 1) << IMG_CENTER.x, IMG_CENTER.y, 1);
