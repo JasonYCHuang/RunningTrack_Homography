@@ -18,22 +18,56 @@
 using namespace cv;
 using namespace std;
 //-------------------------------------------------------
-
+vector<double> differentialFunc(const vector<double> in)
+{
+    vector<double> out(in.size()-1);
+    for(int i=0; i<in.size()-1; ++i)   {
+        out[i] = in[i] - in[i+1];
+        cout << out[i] << endl;//
+    }
+    return out;
+}
 
 void calcVanLineFunc(const vector<Point2f> &pts)
 {
     int pair = pts.size()/2;
-    vector<double> deg(pair), diff_deg(pair-1);    //2 points can form a line.
+    vector<double> deg(pair);    //2 points can form a line.
     for(int i=0; i<pair; ++i)   {
         double slp = slopeFunc(pts[i*2], pts[i*2+1]);
         deg[i] = atan(slp)*TO_DEG;
         if(deg[i] < 0)
         {   deg[i] = deg[i] + 180;  }
+        cout << deg[i] << endl;
     }
-    for(int i=0; i<pair-1; ++i)   {
-        diff_deg[i] = deg[i] - deg[i+1];
-        cout << deg[i] << " | " << deg[i+1] << " | " << diff_deg[i] << endl;
+
+    vector<double>  diff_deg = differentialFunc(deg);
+    cout << endl;//
+    vector<double>  diff2_deg = differentialFunc(diff_deg);
+    double ratio, deg_sum, roll;
+    if(*diff_deg.begin() < *(diff_deg.end()-1)) {
+        ratio = *diff_deg.begin() / *(diff_deg.begin()+1);
+        deg_sum = *diff_deg.begin() / (1-ratio);  //ration must smaller than 1
+        roll = *(deg.begin()+1) + deg_sum;
     }
+    else    {
+        ratio = *(diff_deg.end()-1) / *(diff_deg.end()-2);
+        deg_sum = *(diff_deg.end()-1) / (1-ratio);  //ration must smaller than 1
+        roll = *(deg.end()-2) - deg_sum;
+    }
+    cout << "roll = " << roll << endl;
+    cout << "deg_sum = " << deg_sum << endl;
+    cout << "ratio = " << ratio << endl;
+    cout << *(deg.begin()+1) << endl <<  *(deg.end()-2) << endl;
+
+
+
+
+
+
+
+
+
+
 
 
 
