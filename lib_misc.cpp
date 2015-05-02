@@ -8,8 +8,8 @@
 #include <opencv2/highgui/highgui.hpp>
 
 #include "lib_misc.h"
-#include "hgBy4Pts.h"
-#include "rotByVanPts.h"
+#include "proHgBy4Pts.h"
+#include "proRotByVanPts.h"
 
 #ifndef _CRT_SECURE_NO_WARNINGS
 # define _CRT_SECURE_NO_WARNINGS

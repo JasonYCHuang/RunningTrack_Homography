@@ -28,12 +28,7 @@ public:
 
     void setLineParam(Point2f pt1, Point2f pt2);
 
-    Mat vect();
-
-
-
-
-
+    Mat vect();   //yield the vector of the line.
 
 private:
     double _slope;

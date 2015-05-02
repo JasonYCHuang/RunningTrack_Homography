@@ -1,5 +1,5 @@
-#ifndef VANLINE_H
-#define VANLINE_H
+#ifndef PROVANLINE_H
+#define PROVANLINE_H
 
 #include <iostream>
 #include <sstream>
@@ -26,4 +26,4 @@ extern const double  TO_DEG;
 //-------------------------------------------------------
 void projectVanLine();
 
-#endif // VANLINE_H
+#endif // PROVANLINE_H

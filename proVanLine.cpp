@@ -9,7 +9,7 @@
 
 #include "lib_misc.h"
 #include "lib_math.h"
-#include "vanLine.h"
+#include "proVanLine.h"
 #include "theline.h"
 
 #ifndef _CRT_SECURE_NO_WARNINGS
@@ -22,7 +22,7 @@ using namespace std;
 vector<double> differentialFunc(const vector<double> in)
 {
     vector<double> out(in.size()-1);
-    for(int i=0; i<in.size()-1; ++i)   {
+    for(unsigned int i=0; i<in.size()-1; ++i)   {
         out[i] = in[i] - in[i+1];
         cout << out[i] << endl;//
     }
@@ -32,7 +32,7 @@ vector<double> differentialFunc(const vector<double> in)
 void calcVanLineFunc(const vector<Point2f> &pts, Mat &img)
 {
     vector<TheLine> pL(pts.size()/2);
-    for (int i=0; i<pL.size(); ++i)    {
+    for (unsigned int i=0; i<pL.size(); ++i)    {
         pL[i].setLineParam(pts[i*2], pts[i*2+1]);
     }
 

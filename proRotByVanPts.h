@@ -1,5 +1,5 @@
-#ifndef HGBY4PTS_H
-#define HGBY4PTS_H
+#ifndef PROROTBYVANPTS_H
+#define PROROTBYVANPTS_H
 
 #include <iostream>
 #include <sstream>
@@ -16,9 +16,15 @@
 
 using namespace cv;
 using namespace std;
-//-------------------------------------------------------
-void hgTransformFunc(Mat &ori, Mat &ref, Mat &target, Mat &h_matrix, const string n1, const string n2);
-void hgTransBy4RandPtsFunc(const string name_ori, const string name_ref);
-void projectHgTra4Pts();
 
-#endif // HGBY4PTS_H
+extern const Point2f  CAM_CENTER;
+extern const Point2f  IMG_CENTER;
+extern const double  FOCUS_1;
+extern const double  FOCUS_2;
+extern const double  TO_RAD;
+extern const double  TO_DEG;
+//-------------------------------------------------------
+void rotByVarPtsFunc(const string name);
+void projectRotByVanPts();
+
+#endif // PROROTBYVANPTS_H

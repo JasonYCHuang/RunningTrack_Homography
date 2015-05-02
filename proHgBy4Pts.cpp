@@ -9,7 +9,7 @@
 
 #include "lib_misc.h"
 #include "lib_math.h"
-#include "hgBy4Pts.h"
+#include "proHgBy4Pts.h"
 
 #ifndef _CRT_SECURE_NO_WARNINGS
 # define _CRT_SECURE_NO_WARNINGS

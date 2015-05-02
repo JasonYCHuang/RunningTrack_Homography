@@ -9,8 +9,8 @@
 
 #include "lib_misc.h"
 #include "lib_math.h"
-#include "hgBy4Pts.h"
-#include "rotByVanPts.h"
+#include "proHgBy4Pts.h"
+#include "proRotByVanPts.h"
 #include "theline.h"
 
 #ifndef _CRT_SECURE_NO_WARNINGS

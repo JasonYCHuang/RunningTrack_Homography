@@ -26,9 +26,9 @@ extern const double  TO_DEG = 180/3.14159;
 
 #include "lib_misc.h"
 #include "lib_math.h"
-#include "hgBy4Pts.h"
-#include "rotByVanPts.h"
-#include "vanLine.h"
+#include "proHgBy4Pts.h"
+#include "proRotByVanPts.h"
+#include "proVanLine.h"
 
 #ifndef _CRT_SECURE_NO_WARNINGS
 # define _CRT_SECURE_NO_WARNINGS
