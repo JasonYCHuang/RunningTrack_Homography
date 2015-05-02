@@ -9,7 +9,8 @@ SOURCES += main.cpp \
     rotByVanPts.cpp \
     lib_misc.cpp \
     lib_math.cpp \
-    vanLine.cpp
+    vanLine.cpp \
+    theline.cpp
 
 unix:LIBS += `pkg-config opencv --libs`
 
@@ -37,6 +38,7 @@ HEADERS += \
     rotByVanPts.h \
     lib_misc.h \
     lib_math.h \
-    vanLine.h
+    vanLine.h \
+    theline.h
 
 

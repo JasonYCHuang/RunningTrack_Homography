@@ -20,14 +20,14 @@ using namespace cv;
 using namespace std;
 
 //-------------------------------------------------------
-double slopeFunc(Point2f pt1, Point2f pt2)
+double calcSlopeFunc(Point2f pt1, Point2f pt2)
 {
     double slope;
     slope = (pt2.y - pt1.y)/(pt2.x - pt1.x);
     return slope;
 }
 
-double intersectFunc(Point2f pt1, Point2f pt2)
+double calcIntersectFunc(Point2f pt1, Point2f pt2)
 {
     double intersect;
     intersect = (pt2.x*pt1.y - pt1.x*pt2.y)/(pt2.x - pt1.x);
@@ -44,8 +44,8 @@ Point2f calcVanPtsFunc(Mat &src,  const vector<Point2f> pts, string name)
         int beg_pts = i, end_pts = i+1;
         drawLineFunc( src, pts[beg_pts] , pts[end_pts], 'G');
         imshow( name, src );
-        m[i/2] = slopeFunc(pts[beg_pts], pts[end_pts]);
-        b[i/2] = intersectFunc(pts[beg_pts], pts[end_pts]);
+        m[i/2] = calcSlopeFunc(pts[beg_pts], pts[end_pts]);
+        b[i/2] = calcIntersectFunc(pts[beg_pts], pts[end_pts]);
     } // need to protect divided by 0  TBD
     //=====Calc vanishing point=====
     Point2f vanishing_pts;
@@ -70,7 +70,7 @@ void calcRotAngleFunc(const Mat &unit_vector, double &pitch, double &yaw)
 
 
 
-//----Legacy function, useless now--------
+//----Legacy function, now is useless--------
 double calcProjAngleFunc(const Mat &direction1, const Mat &direction2, const char s)  //useless, kept as backup.
 {
     Mat d1 = direction1.clone();
@@ -94,4 +94,12 @@ double calcProjAngleFunc(const Mat &direction1, const Mat &direction2, const cha
     double cos_angle = d1.dot(d2)/norm(d1)/norm(d2);
     double angle = acos(cos_angle)*TO_DEG;
     return angle;
+}
+
+Mat calcCurlFunc(const Mat &m1, const Mat &m2)
+{
+    Mat curl = (Mat_<double>(3,1) << m1.at<double>(1,0)*m2.at<double>(2,0) - m1.at<double>(2,0)*m2.at<double>(1,0),
+                                     m1.at<double>(2,0)*m2.at<double>(0,0) - m1.at<double>(0,0)*m2.at<double>(2,0),
+                                     m1.at<double>(0,0)*m2.at<double>(1,0) - m1.at<double>(1,0)*m2.at<double>(0,0)  );
+    return curl;
 }

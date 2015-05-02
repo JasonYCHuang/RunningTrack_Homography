@@ -10,6 +10,7 @@
 #include "lib_misc.h"
 #include "lib_math.h"
 #include "vanLine.h"
+#include "theline.h"
 
 #ifndef _CRT_SECURE_NO_WARNINGS
 # define _CRT_SECURE_NO_WARNINGS
@@ -28,51 +29,38 @@ vector<double> differentialFunc(const vector<double> in)
     return out;
 }
 
-void calcVanLineFunc(const vector<Point2f> &pts)
+void calcVanLineFunc(const vector<Point2f> &pts, Mat &img)
 {
-    int pair = pts.size()/2;
-    vector<double> deg(pair);    //2 points can form a line.
-    for(int i=0; i<pair; ++i)   {
-        double slp = slopeFunc(pts[i*2], pts[i*2+1]);
-        deg[i] = atan(slp)*TO_DEG;
-        if(deg[i] < 0)
-        {   deg[i] = deg[i] + 180;  }
-        cout << deg[i] << endl;
+    vector<TheLine> pL(pts.size()/2);
+    for (int i=0; i<pL.size(); ++i)    {
+        pL[i].setLineParam(pts[i*2], pts[i*2+1]);
     }
 
-    vector<double>  diff_deg = differentialFunc(deg);
-    cout << endl;//
-    vector<double>  diff2_deg = differentialFunc(diff_deg);
-    double ratio, deg_sum, roll;
-    if(*diff_deg.begin() < *(diff_deg.end()-1)) {
-        ratio = *diff_deg.begin() / *(diff_deg.begin()+1);
-        deg_sum = *diff_deg.begin() / (1-ratio);  //ration must smaller than 1
-        roll = *(deg.begin()+1) + deg_sum;
-    }
-    else    {
-        ratio = *(diff_deg.end()-1) / *(diff_deg.end()-2);
-        deg_sum = *(diff_deg.end()-1) / (1-ratio);  //ration must smaller than 1
-        roll = *(deg.end()-2) - deg_sum;
-    }
-    cout << "roll = " << roll << endl;
-    cout << "deg_sum = " << deg_sum << endl;
-    cout << "ratio = " << ratio << endl;
-    cout << *(deg.begin()+1) << endl <<  *(deg.end()-2) << endl;
+    Mat vanishingLinevector;
+    //MVG page218, 8-15
+    auto L0XL1 = pL[0].vect().cross(pL[1].vect());
+    auto L0XL2 = pL[0].vect().cross(pL[2].vect());
+    auto L1XL2 = pL[1].vect().cross(pL[2].vect());
+    auto L2XL1 = pL[2].vect().cross(pL[1].vect());
+    double block1 = L0XL2.dot(L1XL2);
+    double block2 = L0XL1.dot(L2XL1);
 
+    vanishingLinevector = block1*(pL[1].vect()) + 2*block2*(pL[2].vect());
+    double deg = atan(-vanishingLinevector.at<double>(0,0)/vanishingLinevector.at<double>(1,0))*TO_DEG;
 
+    Point2f one, two;
+    one.x = 200;
+    two.x = 600;
+    one.y = ( -vanishingLinevector.at<double>(2,0) - vanishingLinevector.at<double>(0,0)*one.x ) / vanishingLinevector.at<double>(1,0) + 500;
+    two.y = ( -vanishingLinevector.at<double>(2,0) - vanishingLinevector.at<double>(0,0)*two.x ) / vanishingLinevector.at<double>(1,0) + 500;
 
+    drawLineFunc( img, one, two, 'R' );
+    imshow( "L", img );
 
-
-
-
-
-
-
-
-
-
-
-
+    cout << -vanishingLinevector.at<double>(0,0)/vanishingLinevector.at<double>(1,0) << endl;
+    cout << deg << endl << endl;
+    cout << one  << endl;
+    cout << two  << endl;
 }
 
 
@@ -88,20 +76,15 @@ void getVanLineFunc(const string name)
     }
     else    {
         //=====Calc vanishing point=====
-        vector<Point2f> selected_pts(8);
+        vector<Point2f> selected_pts(6);
         getPtsLocFunc(img, selected_pts, name);
         vector<Point2f> selected_pts_for_vp{selected_pts[0], selected_pts[1], selected_pts[2], selected_pts[3]};
         Point2f vanish_pts = calcVanPtsFunc(img, selected_pts_for_vp, name);
         //======Calc vanishing line=====
-        calcVanLineFunc(selected_pts);
-
-
-
-
+        calcVanLineFunc(selected_pts, img);
 
         waitKey(0);
         destroyAllWindows();
-
     }
 }
 
@@ -116,4 +99,3 @@ void projectVanLine()
     getVanLineFunc(name_ori);
     cout << endl << endl << endl;
 }
-
