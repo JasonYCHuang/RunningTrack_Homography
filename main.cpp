@@ -27,6 +27,7 @@ extern const double  TO_DEG = 180/3.14159;
 #include "lib_misc.h"
 #include "lib_math.h"
 #include "proHgBy4Pts.h"
+#include "proHgByFeatures.h"
 #include "proRotByVanPts.h"
 #include "proVanLine.h"
 
@@ -46,6 +47,7 @@ char optionsFunc(bool &ci)
         cout << "[3] Homography transformation of lines." << endl;
         cout << "[4] Rotation matrix from vanishing points." << endl;
         cout << "[5] Get roll angle from a vanishing line." << endl;
+        cout << "[6] Homography transformation from feature points" << endl;
         cout << "-----Input a number or '0' to terminate the program-----" << endl;
     }
     else    {
@@ -79,6 +81,9 @@ int main()
                 break;
             case '5':
                 projectVanLine();
+                break;
+            case '6':
+                projectHgByFeatures();
                 break;
             case '0':
                 cout << "See You Next Time!!" << endl;

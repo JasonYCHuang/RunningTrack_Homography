@@ -31,7 +31,7 @@ TheLine::TheLine(const Point2f pt1, const Point2f pt2)
 {
     _slope = calcSlopeFunc(pt1, pt2);
     _intercept = calcIntersectFunc(pt1, pt2);
-    _lineVector = (Mat_<double>(3,1) << _slope/_intercept, -1/_intercept, _intercept/_intercept);
+    _lineVector = (Mat_<double>(3,1) << _slope, -1, _intercept);
     // y = mx + t  => ax + by + c = 0, set c = 1, a line vector is scalible, i.e. v & k*v is the same line. k is a const.
 }
 
@@ -39,7 +39,7 @@ void TheLine::setLineParam(const Point2f pt1, const Point2f pt2)
 {
     _slope = calcSlopeFunc(pt1, pt2);
     _intercept = calcIntersectFunc(pt1, pt2);
-    _lineVector = (Mat_<double>(3,1) << _slope/_intercept, -1/_intercept, _intercept/_intercept);
+    _lineVector = (Mat_<double>(3,1) << _slope, -1, _intercept);
 }
 
 Mat TheLine::vect()

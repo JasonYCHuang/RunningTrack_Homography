@@ -49,10 +49,10 @@ void calcVanLineFunc(const vector<Point2f> &pts, Mat &img)
     double deg = atan(-vanishingLinevector.at<double>(0,0)/vanishingLinevector.at<double>(1,0))*TO_DEG;
 
     Point2f one, two;
-    one.x = 200;
-    two.x = 600;
-    one.y = ( -vanishingLinevector.at<double>(2,0) - vanishingLinevector.at<double>(0,0)*one.x ) / vanishingLinevector.at<double>(1,0) + 500;
-    two.y = ( -vanishingLinevector.at<double>(2,0) - vanishingLinevector.at<double>(0,0)*two.x ) / vanishingLinevector.at<double>(1,0) + 500;
+    one.x = 100;
+    two.x = 500;
+    one.y = -( vanishingLinevector.at<double>(2,0) + vanishingLinevector.at<double>(0,0)*one.x ) / vanishingLinevector.at<double>(1,0) ;
+    two.y = -( vanishingLinevector.at<double>(2,0) + vanishingLinevector.at<double>(0,0)*two.x ) / vanishingLinevector.at<double>(1,0) ;
 
     drawLineFunc( img, one, two, 'R' );
     imshow( "L", img );
@@ -81,7 +81,11 @@ void getVanLineFunc(const string name)
         vector<Point2f> selected_pts_for_vp{selected_pts[0], selected_pts[1], selected_pts[2], selected_pts[3]};
         Point2f vanish_pts = calcVanPtsFunc(img, selected_pts_for_vp, name);
         //======Calc vanishing line=====
+        //vector<Point2f> gp1st{selected_pts[0], selected_pts[1], selected_pts[2], selected_pts[3], selected_pts[4], selected_pts[5]};
+        //vector<Point2f> gp2nd{selected_pts[2], selected_pts[3], selected_pts[4], selected_pts[5], selected_pts[6], selected_pts[7]};
         calcVanLineFunc(selected_pts, img);
+        //waitKey(0);
+        //calcVanLineFunc(gp2nd, img);
 
         waitKey(0);
         destroyAllWindows();

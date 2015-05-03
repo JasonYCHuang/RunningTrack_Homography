@@ -23,14 +23,22 @@ using namespace std;
 double calcSlopeFunc(Point2f pt1, Point2f pt2)
 {
     double slope;
-    slope = (pt2.y - pt1.y)/(pt2.x - pt1.x);
+    if (pt2.x == pt1.x){
+        slope = 999999999.0;        //workaround: prevent divided by 0.   //TBD: token needed.
+    }else    {
+        slope = (pt2.y - pt1.y)/(pt2.x - pt1.x);
+    }
     return slope;
 }
 
 double calcIntersectFunc(Point2f pt1, Point2f pt2)
 {
     double intersect;
-    intersect = (pt2.x*pt1.y - pt1.x*pt2.y)/(pt2.x - pt1.x);
+    if (pt2.x == pt1.x) {
+        intersect = 999999999.0;        //workaround: prevent divided by 0.   //TBD: token needed.
+    }else   {
+        intersect = (pt2.x*pt1.y - pt1.x*pt2.y)/(pt2.x - pt1.x);
+    }
     return intersect;
 }
 
