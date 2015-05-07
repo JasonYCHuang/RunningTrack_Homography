@@ -49,6 +49,32 @@ void rotByVarPtsFunc(const string name)
         Mat d_center = inv_k_param*v_homo_coord_center;
         d_ori = d_ori/norm(d_ori);           //get unit vector
         d_center = d_center/norm(d_center);
+        cout << d_ori << endl;
+        cout << d_center << endl;
+        Mat v = d_ori.cross(d_center);
+        double s = norm(v);
+        double c = d_ori.dot(d_center);
+
+        Mat vx =  (Mat_<double>(3,3) <<    0,                   -v.at<double>(2,0),  v.at<double>(1,0),
+                                           v.at<double>(2,0),   0,                  -v.at<double>(0,0),
+                                          -v.at<double>(1,0),   v.at<double>(0,0),   0                 );
+
+        cout << "vx = " << vx << endl;
+        cout << "s = " << s << endl;
+        cout << "c = " << c << endl;
+
+
+        Mat Rot_matrix = Mat::eye(3, 3, CV_32F); // + vx ; //+ vx*vx*(1-c)/s/s;
+
+
+        cout << Rot_matrix << endl;
+
+
+
+
+
+
+        /*
 
         //=====Pitch, Yaw, Roll======================
         double pitch_angle, yaw_angle;
@@ -61,6 +87,8 @@ void rotByVarPtsFunc(const string name)
         cout << "====================================" << endl;
         cout << d_ori << endl;
 
+
+        */
         imwrite( "./Rot.jpg", img );
 
         waitKey(0);

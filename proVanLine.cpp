@@ -87,6 +87,8 @@ void getVanLineFunc(const string name)
         //waitKey(0);
         //calcVanLineFunc(gp2nd, img);
 
+        imwrite( "./VL.jpg", img );
+
         waitKey(0);
         destroyAllWindows();
     }
