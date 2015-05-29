@@ -66,6 +66,8 @@ void hgTransBy4RandPtsFunc(const string name_ori, const string name_ref)
         waitKey(0);
 
         destroyAllWindows();
+
+        cout << endl << "H: " << homography_matrix << endl << endl;
     }
 }
 

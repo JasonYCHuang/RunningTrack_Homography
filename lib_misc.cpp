@@ -20,7 +20,7 @@ using namespace std;
 
 
 //------------------------------------------------------------------------
-Scalar colorVectFunc(char color_name)
+Scalar colorVectFunc(const char color_name)
 {
     Scalar colorVector = Scalar( 0, 0, 0 );
     switch (color_name)   {

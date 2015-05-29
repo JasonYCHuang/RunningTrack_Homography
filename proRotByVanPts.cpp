@@ -24,10 +24,22 @@ void rotByVarPtsFunc(const string name)
 {
     Mat img;
     img = imread(name, CV_LOAD_IMAGE_COLOR);   // Read the 1st file
+
     if( !img.data)   {         // Check for invalid input
         cout <<  " <Incorrect Usage> Could not open or find the image" << endl ;
     }
     else    {
+
+
+
+
+
+
+
+
+
+
+/*
         //=====Draw center=====
         drawCenterFunc(img);
 
@@ -68,7 +80,7 @@ void rotByVarPtsFunc(const string name)
 
 
         cout << Rot_matrix << endl;
-
+*/
 
 
 
@@ -89,7 +101,7 @@ void rotByVarPtsFunc(const string name)
 
 
         */
-        imwrite( "./Rot.jpg", img );
+        //imwrite( "./Rot.jpg", img );
 
         waitKey(0);
         destroyAllWindows();
