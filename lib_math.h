@@ -19,7 +19,7 @@ using namespace std;
 //-------------------------------------------------------
 double calcSlopeFunc(Point2f pt1, Point2f pt2);
 double calcIntersectFunc(Point2f pt1, Point2f pt2);
-Point2f calcVanPtsFunc(Mat &src,  const vector<Point2f> pts, string name);
+Mat calcVanPtsFunc(Mat &src,  const vector<Point2f> pts, string name);
 void calcRotAngleFunc(const Mat &unit_vector, double &pitch, double &yaw);
 
 

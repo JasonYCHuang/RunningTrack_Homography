@@ -31,8 +31,10 @@ vector<double> differentialFunc(const vector<double> in)
 
 Mat calcVanLineSVDFunc(const vector<Point2f> &pts, Mat &img)
 {
+    //Set Mat for SVD: A=U*D*VT
     Mat A, U, D, VT, V;
 
+    //Convert points to lines, and create A matrix by DLT.
     vector<TheLine> line(pts.size()/2);
     for (unsigned int i=0; i<line.size(); ++i)    {
         line[i].setLineParam(pts[i*2], pts[i*2+1], (1+i));
@@ -42,46 +44,33 @@ Mat calcVanLineSVDFunc(const vector<Point2f> &pts, Mat &img)
         A.push_back(temp2);
     }
 
+    //Solve SVD. vLine is equal to the 1st row of A.
     SVD::compute(A, D, U, VT);
     V = VT.t();
-
-    //cout << "D" << D << endl << endl;
-    //cout << "U" << U << endl << endl;
-    //cout << "VT" << VT << endl << endl;
-    //cout << "V" << V << endl << endl;
-
     Mat vLine = (Mat_<double>(1,3) << V.at<double>(0,5), V.at<double>(2,5), V.at<double>(4,5) );
-    cout << "vLine: " << vLine << endl;
 
+    //Determine 2 points for vLine, and draw the vanishing line base on them.
     Point2f one, two;
     one.x = 200;
     two.x = 600;
     one.y = -( vLine.at<double>(0,2) + vLine.at<double>(0,0)*one.x ) / vLine.at<double>(0,1) ;
     two.y = -( vLine.at<double>(0,2) + vLine.at<double>(0,0)*two.x ) / vLine.at<double>(0,1) ;
-
+    //Make a shift to ensure the vanishing line is in the field of view.
     double shift;
     if(one.y<0 || two.y<0)  {
         shift = (one.y < two.y) ? -one.y : -two.y;
     }
     one.y += shift;
     two.y += shift;
-
+    //Draw the vanishing line
     drawLineFunc( img, one, two, 'R' );
     imshow( "vLine", img );
     imwrite( "./vLineA.jpg", img );
 
-    double deg = atan(-vLine.at<double>(0,0)/vLine.at<double>(1,0))*TO_DEG;
-    //cout << "deg" << deg << endl << endl;
-    cout << one  << endl;
-    cout << two  << endl;
+    //Normalize vLine, that is make the 3rd element to 1.
+    Mat vLineNormalized = (Mat_<double>(1,3) << V.at<double>(0,5)/V.at<double>(4,5), V.at<double>(2,5)/V.at<double>(4,5), 1 );
 
-    //=====camera internal parameter=====
-    Mat K = (Mat_<double>(3,3) << FOCUS_1, 0.00*FOCUS_1, CAM_CENTER.x,
-                                        0,       FOCUS_2,      CAM_CENTER.y,
-                                        0,       0,            1);
-    Mat N = (K.t())*(vLine.t());
-    N = N/norm(N);
-    return N;
+    return vLineNormalized;
 }
 
 
@@ -131,54 +120,25 @@ void getVanLineFunc(const string name)
     if( !img.data)   {         // Check for invalid input
         cout <<  " <Incorrect Usage> Could not open or find the image" << endl ;
     }
-    else    {
-
-        /*
-        Point2f vp(212.479, 78.083);
-        circle(img, vp, 20, colorVectFunc('Y'), 2);
-        circle(img, vp, 2, colorVectFunc('Y'), 1);
-
-        Point2f pt1(348, 334);
-        circle(img, pt1, 20, colorVectFunc('Y'), 2);
-        circle(img, pt1, 2, colorVectFunc('Y'), 1);
-
-        Point2f pt2(387, 334);
-        circle(img, pt2, 20, colorVectFunc('Y'), 2);
-        circle(img, pt2, 2, colorVectFunc('Y'), 1);
-
-        Point2f pt3(431, 334);
-        circle(img, pt3, 20, colorVectFunc('Y'), 2);
-        circle(img, pt3, 2, colorVectFunc('Y'), 1);
-
-        Point2f pt4(446, 304);
-        //circle(img, pt4, 20, colorVectFunc('Y'), 2);
-        //circle(img, pt4, 2, colorVectFunc('Y'), 1);
-
-        vector<Point2f> selected_pts1{pt3, vp, pt2, vp, pt1, vp};
-        calcVanLineMVGFunc(selected_pts1, img);
-        vector<Point2f> selected_pts2{pt1, vp, pt2, vp, pt3, vp};
-        calcVanLineMVGFunc(selected_pts2, img);
-        vector<Point2f> selected_pts3{pt1, vp, pt2, vp, pt3, vp, pt4, vp};
-        calcVanLineMVGFunc(selected_pts3, img);
-
-        */
-
-
-
-        //=====Calc vanishing point=====
+    else    {                  //if img data is valid, process it!
+        //Fetch feature points
         vector<Point2f> selected_pts(8);
         getPtsLocFunc(img, selected_pts, name);
         vector<Point2f> selected_pts_for_vp{selected_pts[0], selected_pts[1], selected_pts[2], selected_pts[3]};
-        Point2f vanish_pts = calcVanPtsFunc(img, selected_pts_for_vp, name);
-        //======Calc vanishing line=====
-        Mat normal;
-        normal = calcVanLineSVDFunc(selected_pts, img);
-        cout << "normal" << normal << endl << endl;
-        //imwrite( "./VL.jpg", img );
 
-        waitKey(0);
-        destroyAllWindows();
+        //Calculate vanishing point
+        Mat vanishingPoint = calcVanPtsFunc(img, selected_pts_for_vp, name);
+
+        //Calculate vanishing line
+        Mat vanishingLine = calcVanLineSVDFunc(selected_pts, img);
+
+        //Calculate surface normal
+        Mat N = (K.t())*(vanishingLine.t());
+        N = N/norm(N);
+        cout << "normal" << N << endl << endl;
     }
+    waitKey(0);
+    destroyAllWindows();
 }
 
 

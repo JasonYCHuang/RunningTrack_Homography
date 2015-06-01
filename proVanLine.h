@@ -23,6 +23,7 @@ extern const double  FOCUS_1;
 extern const double  FOCUS_2;
 extern const double  TO_RAD;
 extern const double  TO_DEG;
+extern const Mat K;
 //-------------------------------------------------------
 void projectVanLine();
 

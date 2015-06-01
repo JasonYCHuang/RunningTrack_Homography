@@ -42,7 +42,7 @@ double calcIntersectFunc(Point2f pt1, Point2f pt2)
     return intersect;
 }
 
-Point2f calcVanPtsFunc(Mat &src,  const vector<Point2f> pts, string name)
+Mat calcVanPtsFunc(Mat &src,  const vector<Point2f> pts, string name)
 {
     int num_pts = pts.size();
     //=====Calc and draw lines=====
@@ -56,15 +56,17 @@ Point2f calcVanPtsFunc(Mat &src,  const vector<Point2f> pts, string name)
         b[i/2] = calcIntersectFunc(pts[beg_pts], pts[end_pts]);
     } // need to protect divided by 0  TBD
     //=====Calc vanishing point=====
-    Point2f vanishing_pts;
-    vanishing_pts.x = (b[1]-b[0])/(m[0]-m[1]);
-    vanishing_pts.y = (b[1]*m[0]-b[0]*m[1])/(m[0]-m[1]);
+    Point2f vPoint;
+    vPoint.x = (b[1]-b[0])/(m[0]-m[1]);
+    vPoint.y = (b[1]*m[0]-b[0]*m[1])/(m[0]-m[1]);
 
-    drawLineFunc( src, pts[1] ,vanishing_pts, 'Y');
-    drawLineFunc( src, pts[2] ,vanishing_pts, 'R');
+    drawLineFunc( src, pts[1] ,vPoint, 'Y');
+    drawLineFunc( src, pts[2] ,vPoint, 'R');
     imshow( name, src);
 
-    return vanishing_pts;
+    Mat vPointMat = (Mat_<double>(1,3) << vPoint.x, vPoint.y, 1 );
+
+    return vPointMat;
 }
 
 void calcRotAngleFunc(const Mat &unit_vector, double &pitch, double &yaw)

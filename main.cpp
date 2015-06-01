@@ -24,6 +24,11 @@ extern const double  FOCUS_2 = 805.38312;
 extern const double  TO_RAD = 3.14159/180;
 extern const double  TO_DEG = 180/3.14159;
 
+//camera internal parameter
+extern const Mat K = (Mat_<double>(3,3) << FOCUS_1, 0.00*FOCUS_1, CAM_CENTER.x,
+                                           0,       FOCUS_2,      CAM_CENTER.y,
+                                           0,       0,            1);
+
 #include "lib_misc.h"
 #include "lib_math.h"
 #include "proHgBy4Pts.h"
