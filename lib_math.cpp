@@ -64,7 +64,7 @@ Mat calcVanPtsFunc(Mat &src,  const vector<Point2f> pts, string name)
     drawLineFunc( src, pts[2] ,vPoint, 'R');
     imshow( name, src);
 
-    Mat vPointMat = (Mat_<double>(1,3) << vPoint.x, vPoint.y, 1 );
+    Mat vPointMat = (Mat_<double>(3,1) << vPoint.x, vPoint.y, 1 );
 
     return vPointMat;
 }

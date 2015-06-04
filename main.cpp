@@ -10,39 +10,22 @@
 using namespace cv;
 using namespace std;
 
-extern const Point2f  CAM_CENTER(442.21533, 284.83506);
-extern const Point2f  IMG_CENTER(442.21533, 284.83506);  //(400, 300);
-
-extern const Point2f  V_TOP(442.21533, 0);
-extern const Point2f  V_BOT(442.21533, 600);
-extern const Point2f  H_LFT(0, 284.83506);
-extern const Point2f  H_RIT(800, 284.83506);
-
-extern const double  FOCUS_1 = 801.08310;
-extern const double  FOCUS_2 = 805.38312;
-
-extern const double  TO_RAD = 3.14159/180;
-extern const double  TO_DEG = 180/3.14159;
-
-//camera internal parameter
-extern const Mat K = (Mat_<double>(3,3) << FOCUS_1, 0.00*FOCUS_1, CAM_CENTER.x,
-                                           0,       FOCUS_2,      CAM_CENTER.y,
-                                           0,       0,            1);
-
 #include "lib_misc.h"
 #include "lib_math.h"
 #include "proHgBy4Pts.h"
 #include "proHgByFeatures.h"
 #include "proRotByVanPts.h"
 #include "proVanLine.h"
+#include "proBirdView.h"
 
 #ifndef _CRT_SECURE_NO_WARNINGS
 # define _CRT_SECURE_NO_WARNINGS
 #endif
 
 
-
-//-----------------------------------------------------------------------
+//
+//Welcome message for users to select functions.
+//
 char optionsFunc(bool &ci)
 {
     if (ci)     {
@@ -53,6 +36,7 @@ char optionsFunc(bool &ci)
         cout << "[4] Rotation matrix from vanishing points." << endl;
         cout << "[5] Get roll angle from a vanishing line." << endl;
         cout << "[6] Homography transformation from feature points" << endl;
+        cout << "[7] Get the birdView image" << endl;
         cout << "-----Input a number or '0' to terminate the program-----" << endl;
     }
     else    {
@@ -64,6 +48,13 @@ char optionsFunc(bool &ci)
     return is;
 }
 
+
+
+
+
+//
+//Main
+//
 int main()
 {
     char prog_select = '0';
@@ -90,6 +81,9 @@ int main()
             case '6':
                 projectHgByFeatures();
                 break;
+            case '7':
+                proBirdView();
+                break;
             case '0':
                 cout << "See You Next Time!!" << endl;
                 brk_token = true;   // terminate the program.
@@ -100,8 +94,6 @@ int main()
                 break;
         }
     }
-
-
 
     return 0;
 }

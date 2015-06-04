@@ -16,6 +16,26 @@
 
 using namespace cv;
 using namespace std;
+
+const Point2f  CAM_CENTER(442.21533, 284.83506);
+const Point2f  IMG_CENTER(442.21533, 284.83506);  //(400, 300);
+
+const Point2f  V_TOP(442.21533, 0);
+const Point2f  V_BOT(442.21533, 600);
+const Point2f  H_LFT(0, 284.83506);
+const Point2f  H_RIT(800, 284.83506);
+
+const double  FOCUS_1 = 801.08310;
+const double  FOCUS_2 = 805.38312;
+
+const double  TO_RAD = 3.14159/180;
+const double  TO_DEG = 180/3.14159;
+
+//camera internal parameter
+const Mat K = (Mat_<double>(3,3) << FOCUS_1, 0.00*FOCUS_1, CAM_CENTER.x,
+                                    0,       FOCUS_2,      CAM_CENTER.y,
+                                    0,       0,            1);
+
 //-------------------------------------------------------
 double calcSlopeFunc(Point2f pt1, Point2f pt2);
 double calcIntersectFunc(Point2f pt1, Point2f pt2);

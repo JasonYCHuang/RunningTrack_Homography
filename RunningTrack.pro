@@ -12,7 +12,8 @@ SOURCES += main.cpp \
     proRotByVanPts.cpp \
     proVanLine.cpp \
     proHgByFeatures.cpp \
-    proRotMatByVG.cpp
+    proRotMatByVG.cpp \
+    proBirdView.cpp
 
 unix:LIBS += `pkg-config opencv --libs`
 
@@ -43,6 +44,7 @@ HEADERS += \
     proVanLine.h \
     proHgBy4Pts.h \
     proHgByFeatures.h \
-    proRotMatByVG.h
+    proRotMatByVG.h \
+    proBirdView.h
 
 

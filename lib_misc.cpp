@@ -8,6 +8,7 @@
 #include <opencv2/highgui/highgui.hpp>
 
 #include "lib_misc.h"
+#include "lib_math.h"
 #include "proHgBy4Pts.h"
 #include "proRotByVanPts.h"
 
@@ -17,7 +18,6 @@
 
 using namespace cv;
 using namespace std;
-
 
 //------------------------------------------------------------------------
 Scalar colorVectFunc(const char color_name)

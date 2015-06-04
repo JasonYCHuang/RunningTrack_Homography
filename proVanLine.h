@@ -17,13 +17,6 @@
 using namespace cv;
 using namespace std;
 
-extern const Point2f  CAM_CENTER;
-extern const Point2f  IMG_CENTER;
-extern const double  FOCUS_1;
-extern const double  FOCUS_2;
-extern const double  TO_RAD;
-extern const double  TO_DEG;
-extern const Mat K;
 //-------------------------------------------------------
 void projectVanLine();
 
