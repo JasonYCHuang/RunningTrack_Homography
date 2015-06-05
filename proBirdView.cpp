@@ -18,18 +18,34 @@
 using namespace cv;
 using namespace std;
 //-------------------------------------------------------
-
-Mat translateImg(Mat &img, int offsetx, int offsety){
-    Mat trans_mat = (Mat_<double>(2,3) << 1, 0, offsetx, 0, 1, offsety);
-    warpAffine(img,img,trans_mat,img.size());
-    return trans_mat;
+map<string, double> getBoundary(const vector<Point2f> &corners)
+{
+    map<string, double> boundary;
+    for(unsigned int j=0; j!=corners.size(); ++j)    {
+        //circle(img_transformed, img_corners_transformed[j], 15, Scalar(0, 0, 255), 2 );
+        if(boundary.empty())    {      // Initialized boundary if there is no data.
+            boundary["left"]   = corners[j].x;
+            boundary["right"]  = corners[j].x;
+            boundary["top"]    = corners[j].y;
+            boundary["bottom"] = corners[j].y;
+        } else  {                      // Compare corners to get the most outer boundary.
+            boundary["left"]   = getMin(boundary["left"], corners[j].x);
+            boundary["right"]  = getMax(boundary["right"], corners[j].x);
+            boundary["top"]    = getMin(boundary["top"], corners[j].y);
+            boundary["bottom"] = getMax(boundary["bottom"], corners[j].y);
+        }
+    }
+    boundary["width"]  = boundary["right"] - boundary["left"];
+    boundary["height"] = boundary["bottom"] - boundary["top"];
+    return boundary;
 }
+
 
 void birdView(const string name_ori)
 {
-    //Rotation Matrix
+    // Rotation Matrix
     double alpha(0), beta(0), gamma(0);  //All angles are initialized as zero.
-    beta = -30*TO_RAD;
+    beta = -60*TO_RAD;
     Mat R_pitch = (Mat_<double>(3, 3) << 1,  0,         0,
                                          0,  cos(beta), sin(beta),
                                          0, -sin(beta), cos(beta));
@@ -40,25 +56,47 @@ void birdView(const string name_ori)
                                          -sin(gamma), cos(gamma), 0,
                                          0,           0,          1);
     Mat R = R_roll*R_yaw*R_pitch;
-    //cout << "R" << R << endl;
 
-    //Homography matrix.
+    // Homography matrix.
     Mat H = K*R*K.inv();
 
-    //Create the birdView image.
+    // Create the birdView image.
     Mat img_ori, img_transformed;
     img_ori = imread(name_ori, CV_LOAD_IMAGE_COLOR);   // Read the file
     if( !img_ori.data)   {                             // Check for invalid input
         cout <<  " <Incorrect Usage> Could not open or find the image" << endl ;
     }
     else    {
-        string nameBirdView = "Bird View";
-        warpPerspective(img_ori, img_transformed, H, Size(800, 1600));
+        // Calculate the amount to shift the image to field of view by corners .
+        vector<Mat> img_corners_coordinate{ (Mat_<double>(3, 1) << 0, 0, 1),
+                                            (Mat_<double>(3, 1) << 0, img_ori.size().height, 1),
+                                            (Mat_<double>(3, 1) << img_ori.size().width, img_ori.size().height, 1),
+                                            (Mat_<double>(3, 1) << img_ori.size().width, 0, 1) };// The homogeneous coordinate of the original image.
+        vector<Point2f> img_corners_transformed;    // Transformed image corners.
+        for(auto &i : img_corners_coordinate)    {
+            i = H*i;        // Homography transformation.
+            img_corners_transformed.push_back(Point2f(i.at<double>(0, 0)/i.at<double>(2, 0), i.at<double>(1, 0)/i.at<double>(2, 0)));
+            //cout << "img_corners_transformed" << Point2f(i.at<double>(0, 0)/i.at<double>(2, 0), i.at<double>(1, 0)/i.at<double>(2, 0)) << endl;
+        }
+        map<string, double> boundary = getBoundary(img_corners_transformed);      // The boundary of transformed image corners.
 
-        //translateImg(img_transformed,0,-200);
+        // Modify Homography Matrix to shift the image into the field of view.
+        Mat shift = (Mat_<double>(3, 3) << 1, 0, -boundary["left"],
+                                           0, 1, -boundary["top"],
+                                           0, 0, 1);
+        H = shift*H;
+        // Perspective transformation.
+        warpPerspective(img_ori, img_transformed, H, Size(boundary["width"], boundary["height"]));
 
-        namedWindow( nameBirdView, CV_WINDOW_NORMAL | CV_WINDOW_KEEPRATIO );
-        imshow( nameBirdView, img_transformed );
+        // Display and save images
+        string name_ori = "Original image";
+        namedWindow( name_ori, CV_WINDOW_NORMAL | CV_WINDOW_KEEPRATIO );
+        imshow( name_ori, img_ori );
+        imwrite( "./original.jpg", img_ori );
+        string name_bird_view = "Bird View";
+        namedWindow( name_bird_view, CV_WINDOW_NORMAL | CV_WINDOW_KEEPRATIO );
+        imshow( name_bird_view, img_transformed );
+        imwrite( "./birdView.jpg", img_transformed );
 
         waitKey(0);
         destroyAllWindows();
@@ -67,12 +105,12 @@ void birdView(const string name_ori)
 
 void proBirdView()
 {
-    //Let the user to input the file name.
+    // Let the user to input the file name.
     cout << "=> Input the name of the original image." << endl;
     string name_ori;
     cin >> name_ori;
 
-    //Start to convert the birdView image
+    // Start to convert the birdView image
     birdView(name_ori);
 }
 

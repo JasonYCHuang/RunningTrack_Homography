@@ -20,6 +20,28 @@ using namespace cv;
 using namespace std;
 
 //-------------------------------------------------------
+double getMax(const double a, const double b)
+{
+    double output;
+    if (a>b)    {
+        output = a;
+    } else  {
+        output = b;
+    }
+    return output;
+}
+
+double getMin(const double a, const double b)
+{
+    double output;
+    if (a<b)    {
+        output = a;
+    } else  {
+        output = b;
+    }
+    return output;
+}
+
 double calcSlopeFunc(Point2f pt1, Point2f pt2)
 {
     double slope;
