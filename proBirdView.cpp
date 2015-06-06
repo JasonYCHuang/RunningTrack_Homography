@@ -22,30 +22,32 @@ map<string, double> getBoundary(const vector<Point2f> &corners)
 {
     map<string, double> boundary;
     for(unsigned int j=0; j!=corners.size(); ++j)    {
-        //circle(img_transformed, img_corners_transformed[j], 15, Scalar(0, 0, 255), 2 );
         if(boundary.empty())    {      // Initialized boundary if there is no data.
             boundary["left"]   = corners[j].x;
             boundary["right"]  = corners[j].x;
             boundary["top"]    = corners[j].y;
             boundary["bottom"] = corners[j].y;
-        } else  {                      // Compare corners to get the most outer boundary.
+        } else  {                      // Compare corners to get the outer-most boundary.
             boundary["left"]   = getMin(boundary["left"], corners[j].x);
             boundary["right"]  = getMax(boundary["right"], corners[j].x);
             boundary["top"]    = getMin(boundary["top"], corners[j].y);
             boundary["bottom"] = getMax(boundary["bottom"], corners[j].y);
         }
     }
+    // Calculate width and height
     boundary["width"]  = boundary["right"] - boundary["left"];
     boundary["height"] = boundary["bottom"] - boundary["top"];
+
     return boundary;
 }
 
 
 void birdView(const string name_ori)
 {
-    // Rotation Matrix
+    // Setting the rotation Matrix
     double alpha(0), beta(0), gamma(0);  //All angles are initialized as zero.
     beta = -60*TO_RAD;
+    alpha = 45*TO_RAD;
     Mat R_pitch = (Mat_<double>(3, 3) << 1,  0,         0,
                                          0,  cos(beta), sin(beta),
                                          0, -sin(beta), cos(beta));
@@ -55,19 +57,21 @@ void birdView(const string name_ori)
     Mat R_roll  = (Mat_<double>(3, 3) << cos(gamma) , sin(gamma), 0,
                                          -sin(gamma), cos(gamma), 0,
                                          0,           0,          1);
-    Mat R = R_roll*R_yaw*R_pitch;
+    // Different orders of pitch, yaw and roll will result in different outcomes!
+    Mat R = R_roll*R_pitch*R_yaw;
 
-    // Homography matrix.
+    // Homography matrix calculated from pure rotation.
     Mat H = K*R*K.inv();
 
-    // Create the birdView image.
+    // If the original image is valid, then create the birdView image.
     Mat img_ori, img_transformed;
     img_ori = imread(name_ori, CV_LOAD_IMAGE_COLOR);   // Read the file
     if( !img_ori.data)   {                             // Check for invalid input
         cout <<  " <Incorrect Usage> Could not open or find the image" << endl ;
     }
     else    {
-        // Calculate the amount to shift the image to field of view by corners .
+        // Calculate the amount to shift the image to field of view by corners.
+        // Caution: This shift mechanism will be failure when the homography of the 4 corners swapped orders!
         vector<Mat> img_corners_coordinate{ (Mat_<double>(3, 1) << 0, 0, 1),
                                             (Mat_<double>(3, 1) << 0, img_ori.size().height, 1),
                                             (Mat_<double>(3, 1) << img_ori.size().width, img_ori.size().height, 1),
@@ -76,7 +80,7 @@ void birdView(const string name_ori)
         for(auto &i : img_corners_coordinate)    {
             i = H*i;        // Homography transformation.
             img_corners_transformed.push_back(Point2f(i.at<double>(0, 0)/i.at<double>(2, 0), i.at<double>(1, 0)/i.at<double>(2, 0)));
-            //cout << "img_corners_transformed" << Point2f(i.at<double>(0, 0)/i.at<double>(2, 0), i.at<double>(1, 0)/i.at<double>(2, 0)) << endl;
+            cout << "img_corners_transformed" << Point2f(i.at<double>(0, 0)/i.at<double>(2, 0), i.at<double>(1, 0)/i.at<double>(2, 0)) << endl;
         }
         map<string, double> boundary = getBoundary(img_corners_transformed);      // The boundary of transformed image corners.
 
@@ -84,7 +88,8 @@ void birdView(const string name_ori)
         Mat shift = (Mat_<double>(3, 3) << 1, 0, -boundary["left"],
                                            0, 1, -boundary["top"],
                                            0, 0, 1);
-        H = shift*H;
+        H = shift*H;    // Update Homography base on a shift, i.e. multiplied by a translation matrix.
+
         // Perspective transformation.
         warpPerspective(img_ori, img_transformed, H, Size(boundary["width"], boundary["height"]));
 
