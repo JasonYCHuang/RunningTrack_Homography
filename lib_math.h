@@ -17,17 +17,17 @@
 using namespace cv;
 using namespace std;
 
-/*
+
 const Point2f  CAM_CENTER(831, 388);
 const Point2f  IMG_CENTER(831, 388);
 const double  FOCUS_1 = 1000;
 const double  FOCUS_2 = 1000;
-*/
+/*
 const double  FOCUS_1 = 801.08310;      //test
 const double  FOCUS_2 = 805.38312;      //test
 const Point2f  CAM_CENTER(442.21533, 284.83506);  //test
 const Point2f  IMG_CENTER(442.21533, 284.83506);  //test
-
+*/
 const Point2f  V_TOP(442.21533, 0);
 const Point2f  V_BOT(442.21533, 600);
 const Point2f  H_LFT(0, 284.83506);
