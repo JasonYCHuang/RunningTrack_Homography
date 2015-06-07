@@ -41,24 +41,10 @@ map<string, double> getBoundary(const vector<Point2f> &corners)
     return boundary;
 }
 
-
 void birdView(const string name_ori)
 {
-    // Setting the rotation Matrix
-    double alpha(0), beta(0), gamma(0);  //All angles are initialized as zero.
-    beta = -60*TO_RAD;
-    alpha = 45*TO_RAD;
-    Mat R_pitch = (Mat_<double>(3, 3) << 1,  0,         0,
-                                         0,  cos(beta), sin(beta),
-                                         0, -sin(beta), cos(beta));
-    Mat R_yaw   = (Mat_<double>(3, 3) << cos(alpha), 0, -sin(alpha),
-                                         0,          1, 0,
-                                         sin(alpha), 0, cos(alpha));
-    Mat R_roll  = (Mat_<double>(3, 3) << cos(gamma) , sin(gamma), 0,
-                                         -sin(gamma), cos(gamma), 0,
-                                         0,           0,          1);
-    // Different orders of pitch, yaw and roll will result in different outcomes!
-    Mat R = R_roll*R_pitch*R_yaw;
+    // Setting the rotation Matrix  // getRotationMatrix(yaw, pitch, roll)
+    Mat R = getRotationMatrix(0, 0, 0);
 
     // Homography matrix calculated from pure rotation.
     Mat H = K*R*K.inv();
@@ -80,7 +66,7 @@ void birdView(const string name_ori)
         for(auto &i : img_corners_coordinate)    {
             i = H*i;        // Homography transformation.
             img_corners_transformed.push_back(Point2f(i.at<double>(0, 0)/i.at<double>(2, 0), i.at<double>(1, 0)/i.at<double>(2, 0)));
-            cout << "img_corners_transformed" << Point2f(i.at<double>(0, 0)/i.at<double>(2, 0), i.at<double>(1, 0)/i.at<double>(2, 0)) << endl;
+            // //cout << "img_corners_transformed" << Point2f(i.at<double>(0, 0)/i.at<double>(2, 0), i.at<double>(1, 0)/i.at<double>(2, 0)) << endl;
         }
         map<string, double> boundary = getBoundary(img_corners_transformed);      // The boundary of transformed image corners.
 

@@ -20,6 +20,21 @@ using namespace cv;
 using namespace std;
 
 //-------------------------------------------------------
+Mat getRotationMatrix(double alpha, double beta, double gamma)
+{
+    Mat R_pitch = (Mat_<double>(3, 3) << 1,  0,         0,
+                                         0,  cos(beta), sin(beta),
+                                         0, -sin(beta), cos(beta));
+    Mat R_yaw   = (Mat_<double>(3, 3) << cos(alpha), 0, -sin(alpha),
+                                         0,          1, 0,
+                                         sin(alpha), 0, cos(alpha));
+    Mat R_roll  = (Mat_<double>(3, 3) << cos(gamma) , sin(gamma), 0,
+                                         -sin(gamma), cos(gamma), 0,
+                                         0,           0,          1);
+    // Different orders of pitch, yaw and roll will result in different outcomes!
+    return R_pitch*R_yaw*R_roll;
+}
+
 double getMax(const double a, const double b)
 {
     double output;

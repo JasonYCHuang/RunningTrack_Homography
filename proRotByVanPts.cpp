@@ -23,42 +23,26 @@ using namespace std;
 void rotByVarPtsFunc(const string name)
 {
     Mat img;
-    img = imread(name, CV_LOAD_IMAGE_COLOR);   // Read the 1st file
-
+    img = imread(name, CV_LOAD_IMAGE_COLOR);   // Read the file
     if( !img.data)   {         // Check for invalid input
         cout <<  " <Incorrect Usage> Could not open or find the image" << endl ;
     }
     else    {
-
-
-
-
-
-
-
-
-
-
-/*
         //=====Draw center=====
         drawCenterFunc(img);
 
         //=====Calc vanishing point & Set homo coordinate=====
         vector<Point2f> selected_pts(4);
         getPtsLocFunc(img, selected_pts, name);
-        Point2f vanish_pts_ori = calcVanPtsFunc(img, selected_pts, name);
 
-        Mat v_homo_coord_ori    = (Mat_<double>(3, 1) << vanish_pts_ori.x, vanish_pts_ori.y, 1);
+        Mat v_homo_coord_ori    = calcVanPtsFunc(img, selected_pts, name);
         Mat v_homo_coord_center = (Mat_<double>(3, 1) << IMG_CENTER.x, IMG_CENTER.y, 1);
 
         //=====camera internal parameter=====
-        Mat k_param = (Mat_<double>(3,3) << FOCUS_1, 0.00*FOCUS_1, CAM_CENTER.x,
-                                            0,       FOCUS_2,      CAM_CENTER.y,
-                                            0,       0,            1);
-        Mat inv_k_param;
-        invert(k_param, inv_k_param);
-        Mat d_ori    = inv_k_param*v_homo_coord_ori;
-        Mat d_center = inv_k_param*v_homo_coord_center;
+        Mat inv_K;
+        invert(K, inv_K);
+        Mat d_ori    = inv_K*v_homo_coord_ori;
+        Mat d_center = inv_K*v_homo_coord_center;
         d_ori = d_ori/norm(d_ori);           //get unit vector
         d_center = d_center/norm(d_center);
         cout << d_ori << endl;
@@ -80,13 +64,13 @@ void rotByVarPtsFunc(const string name)
 
 
         cout << Rot_matrix << endl;
-*/
 
 
 
 
 
-        /*
+
+
 
         //=====Pitch, Yaw, Roll======================
         double pitch_angle, yaw_angle;
@@ -100,8 +84,8 @@ void rotByVarPtsFunc(const string name)
         cout << d_ori << endl;
 
 
-        */
-        //imwrite( "./Rot.jpg", img );
+
+        imwrite( "./vPoint.jpg", img );
 
         waitKey(0);
         destroyAllWindows();

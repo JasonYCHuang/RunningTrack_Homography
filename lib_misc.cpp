@@ -100,6 +100,7 @@ void getPtsLocFunc(Mat &img, vector<Point2f> &pts, const string name )
         waitKey(0);
         drawCircleFunc( img, *it, 'B' );
         imshow( name, img );
+        // //cout << "pts" << *it << endl;
     }
     if(pts.size() == 4)   {
         for(auto it = pts.begin(); it != pts.end(); ++it)   {   //=====Draw lines=====
