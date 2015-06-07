@@ -114,9 +114,6 @@ void getVanLineFunc(const string name)
     destroyAllWindows();
 }
 
-
-
-
 void projectVanLine()
 {
     // Let the user to input the file name.

@@ -28,61 +28,54 @@ void rotByVarPtsFunc(const string name)
         cout <<  " <Incorrect Usage> Could not open or find the image" << endl ;
     }
     else    {
-        //=====Draw center=====
+        // Draw the camera center
         drawCenterFunc(img);
 
-        //=====Calc vanishing point & Set homo coordinate=====
+        // Calculate the vanishing point by 4 manual selected pts & Set homogeneous coordinate
         vector<Point2f> selected_pts(4);
         getPtsLocFunc(img, selected_pts, name);
+        Mat v_track_line    = calcVanPtsFunc(img, selected_pts, name);      //location of the vanishing point on the image.
+        Mat v_camera_center = (Mat_<double>(3, 1) << CAM_CENTER.x, CAM_CENTER.y, 1); //location of the camera center on the image.
 
-        Mat v_homo_coord_ori    = calcVanPtsFunc(img, selected_pts, name);
-        Mat v_homo_coord_center = (Mat_<double>(3, 1) << IMG_CENTER.x, IMG_CENTER.y, 1);
-
-        //=====camera internal parameter=====
+        // Camera internal parameter
         Mat inv_K;
         invert(K, inv_K);
-        Mat d_ori    = inv_K*v_homo_coord_ori;
-        Mat d_center = inv_K*v_homo_coord_center;
-        d_ori = d_ori/norm(d_ori);           //get unit vector
-        d_center = d_center/norm(d_center);
-        cout << d_ori << endl;
-        cout << d_center << endl;
-        Mat v = d_ori.cross(d_center);
-        double s = norm(v);
-        double c = d_ori.dot(d_center);
+
+        // v=Kd     // a vanishing point "v" back-projects to a ray with direction d.
+        Mat d_track_line    = inv_K*v_track_line;
+        Mat d_camera_center = inv_K*v_camera_center;
+        d_track_line = d_track_line/norm(d_track_line);           //normalized as a unit vector
+        d_camera_center = d_camera_center/norm(d_camera_center);  //normalized as a unit vector
+        // //cout << d_track_line << endl;
+        // //cout << d_camera_center << endl;
+
+        // Calculate the angle between the 2 vectors. [1]sport track lines direction. [2]camera center pointing direction.
+        Mat v = d_track_line.cross(d_camera_center);      // v = A.cross(B) = |A|*|B|*sin(theta)
+        double sin = norm(v);                             // Since d_track_line and d_camera_center are unit vectors, xross magnitude is equal to sin.
+        double cos = d_track_line.dot(d_camera_center);       // Since d_track_line and d_camera_center are unit vectors, dot magnitude is equal to cos.
 
         Mat vx =  (Mat_<double>(3,3) <<    0,                   -v.at<double>(2,0),  v.at<double>(1,0),
                                            v.at<double>(2,0),   0,                  -v.at<double>(0,0),
                                           -v.at<double>(1,0),   v.at<double>(0,0),   0                 );
 
         cout << "vx = " << vx << endl;
-        cout << "s = " << s << endl;
-        cout << "c = " << c << endl;
+        cout << "sin = " << sin << endl;
+        cout << "cos = " << cos << endl;
+
+        Mat R = Mat::eye(3, 3, CV_64F) + vx + vx*vx*((1-cos)/(sin*sin));   //http://math.stackexchange.com/questions/180418/calculate-rotation-matrix-to-align-vector-a-to-vector-b-in-3d
+        cout << R << endl;
+        cout << "pitch = " << atan(R.at<double>(2,1) / R.at<double>(2,2))*TO_DEG << endl;
+        cout << "yaw = "   << -asin(R.at<double>(2,0))*TO_DEG << endl;
 
 
-        Mat Rot_matrix = Mat::eye(3, 3, CV_32F); // + vx ; //+ vx*vx*(1-c)/s/s;
+        cout << "-------------------" << endl;
 
-
-        cout << Rot_matrix << endl;
-
-
-
-
-
-
-
-
-        //=====Pitch, Yaw, Roll======================
-        double pitch_angle, yaw_angle;
-        calcRotAngleFunc(d_ori, pitch_angle, yaw_angle);   //calc angle from rotation matrix.
-
+        // Calculate Pitch, Yaw angles base on Roll=0.
+        double pitch, yaw;
+        calcRotAngleFunc(d_track_line, pitch, yaw);   //calc angle from rotation matrix.
         cout << "Assume roll = 0(deg)" << endl;
-        cout << "pitch_angle = " << pitch_angle << "(deg)" << endl;
-        cout << "yaw_angle   = " << yaw_angle   << "(deg)" << endl;
-
-        cout << "====================================" << endl;
-        cout << d_ori << endl;
-
+        cout << "pitch_angle = " << pitch << "(deg)" << endl;
+        cout << "yaw_angle   = " << yaw   << "(deg)" << endl;
 
 
         imwrite( "./vPoint.jpg", img );
@@ -95,9 +88,12 @@ void rotByVarPtsFunc(const string name)
 
 void projectRotByVanPts()
 {
+    // Let the user to input the file name.
     string name_ori;
     cout << "=> Input the name of the original image." << endl;
     cin >> name_ori;
+
+    // Start to calculate the vanishing point.
     rotByVarPtsFunc(name_ori);
     cout << endl << endl << endl;
 }

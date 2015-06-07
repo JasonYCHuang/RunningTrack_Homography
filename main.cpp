@@ -49,9 +49,6 @@ char optionsFunc(bool &ci)
 }
 
 
-
-
-
 //
 //Main
 //
