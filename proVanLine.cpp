@@ -59,7 +59,7 @@ Mat calcVanLineSVDFunc(const vector<Point2f> &pts, Mat &img, string title, const
     imshow( title, img );
     imwrite( "./vLine.png", img );
 
-    cout << "roll(deg): " << -(vLine.at<double>(0,0) / vLine.at<double>(1,0))*TO_DEG;
+    cout << "roll(deg): " << -(vLine.at<double>(0,0) / vLine.at<double>(1,0))*constant::TO_DEG;
 
     return vLine;
 }

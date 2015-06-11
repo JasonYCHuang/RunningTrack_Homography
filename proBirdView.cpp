@@ -44,7 +44,7 @@ map<string, double> getBoundary(const vector<Point2f> &corners)
 void birdView(const string name_ori)
 {
     // Setting the rotation Matrix  // getRotationMatrix(yaw, pitch, roll)
-    Mat R = getRotationMatrix(8.95887*TO_RAD, (-6.65135-90)*TO_RAD, 0);
+    Mat R = getRotationMatrix(8.95887*constant::TO_RAD, (-6.65135-90)*constant::TO_RAD, 0);
 
     // Homography matrix calculated from pure rotation.
     Mat H = K*R*K.inv();

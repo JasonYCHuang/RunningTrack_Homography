@@ -64,12 +64,12 @@ void rotByVarPtsFunc(const string name)
 
         Mat R = Mat::eye(3, 3, CV_64F) + vx + vx*vx*((1-cos)/(sin*sin));   //http://math.stackexchange.com/questions/180418/calculate-rotation-matrix-to-align-vector-a-to-vector-b-in-3d
         cout << R << endl;
-        cout << "pitch = " << atan(R.at<double>(1, 2) / R.at<double>(2,2))*TO_DEG << endl;
-        cout << "yaw = "   << -asin(R.at<double>(0, 2))*TO_DEG << endl;
+        cout << "pitch = " << atan(R.at<double>(1, 2) / R.at<double>(2,2))*constant::TO_DEG << endl;
+        cout << "yaw = "   << -asin(R.at<double>(0, 2))*constant::TO_DEG << endl;
         cout << "-------------------" << endl;
 
-        cout << "pitch = " << asin(R.at<double>(1, 2))*TO_DEG << endl;
-        cout << "yaw = "   << -atan(R.at<double>(0, 2) / R.at<double>(2,2))*TO_DEG << endl;
+        cout << "pitch = " << asin(R.at<double>(1, 2))*constant::TO_DEG << endl;
+        cout << "yaw = "   << -atan(R.at<double>(0, 2) / R.at<double>(2,2))*constant::TO_DEG << endl;
         cout << "-------------------" << endl;
 
         // Calculate Pitch, Yaw angles base on Roll=0.

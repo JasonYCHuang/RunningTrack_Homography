@@ -109,9 +109,9 @@ Mat calcVanPtsFunc(Mat &src,  const vector<Point2f> pts, string name)
 void calcRotAngleFunc(const Mat &unit_vector, double &pitch, double &yaw)
 {
     Mat u_d1 = unit_vector.clone();
-    pitch = asin(-u_d1.at<double>(1,0))*TO_DEG;
-    double tmp_y = u_d1.at<double>(2,0)/cos(pitch*TO_RAD);
-    yaw = acos(tmp_y)*TO_DEG;
+    pitch = asin(-u_d1.at<double>(1,0))*constant::TO_DEG;
+    double tmp_y = u_d1.at<double>(2,0)/cos(pitch*constant::TO_RAD);
+    yaw = acos(tmp_y)*constant::TO_DEG;
 }
 
 
@@ -139,7 +139,7 @@ double calcProjAngleFunc(const Mat &direction1, const Mat &direction2, const cha
             break;
     }
     double cos_angle = d1.dot(d2)/norm(d1)/norm(d2);
-    double angle = acos(cos_angle)*TO_DEG;
+    double angle = acos(cos_angle)*constant::TO_DEG;
     return angle;
 }
 
