@@ -57,7 +57,7 @@ double getMin(const double a, const double b)
     return output;
 }
 
-double calcSlopeFunc(Point2f pt1, Point2f pt2)
+double calcSlope(Point2f pt1, Point2f pt2)
 {
     double slope;
     if (pt2.x == pt1.x){
@@ -68,7 +68,7 @@ double calcSlopeFunc(Point2f pt1, Point2f pt2)
     return slope;
 }
 
-double calcIntersectFunc(Point2f pt1, Point2f pt2)
+double calcIntersect(Point2f pt1, Point2f pt2)
 {
     double intersect;
     if (pt2.x == pt1.x) {
@@ -89,8 +89,8 @@ Mat calcVanPtsFunc(Mat &src,  const vector<Point2f> pts, string name)
         int beg_pts = i, end_pts = i+1;
         drawLineFunc( src, pts[beg_pts] , pts[end_pts], 'G');
         imshow( name, src );
-        m[i/2] = calcSlopeFunc(pts[beg_pts], pts[end_pts]);
-        b[i/2] = calcIntersectFunc(pts[beg_pts], pts[end_pts]);
+        m[i/2] = calcSlope(pts[beg_pts], pts[end_pts]);
+        b[i/2] = calcIntersect(pts[beg_pts], pts[end_pts]);
     } // need to protect divided by 0  TBD
     //=====Calc vanishing point=====
     Point2f vPoint;

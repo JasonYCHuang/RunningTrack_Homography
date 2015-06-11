@@ -43,8 +43,8 @@ const Mat K = (Mat_<double>(3,3) << FOCUS_1, 0.00*FOCUS_1, CAM_CENTER.x,
 Mat getRotationMatrix(double alpha, double beta, double gamma);
 double getMax(const double a, const double b);
 double getMin(const double a, const double b);
-double calcSlopeFunc(Point2f pt1, Point2f pt2);
-double calcIntersectFunc(Point2f pt1, Point2f pt2);
+double calcSlope(Point2f pt1, Point2f pt2);
+double calcIntersect(Point2f pt1, Point2f pt2);
 Mat calcVanPtsFunc(Mat &src,  const vector<Point2f> pts, string name);
 void calcRotAngleFunc(const Mat &unit_vector, double &pitch, double &yaw);
 

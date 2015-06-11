@@ -7,12 +7,12 @@ CONFIG += c++11
 SOURCES += main.cpp \
     lib_misc.cpp \
     lib_math.cpp \
-    theline.cpp \
     proHgBy4Pts.cpp \
     proRotByVanPts.cpp \
     proVanLine.cpp \
     proHgByFeatures.cpp \
-    proBirdView.cpp
+    proBirdView.cpp \
+    line2D.cpp
 
 unix:LIBS += `pkg-config opencv --libs`
 
@@ -38,11 +38,11 @@ win32:LIBS+= C:\Qt\OpenCV249MinGw\lib\libopencv_calib3d249.dll.a\
 HEADERS += \
     lib_misc.h \
     lib_math.h \
-    theline.h \
     proRotByVanPts.h \
     proVanLine.h \
     proHgBy4Pts.h \
     proHgByFeatures.h \
-    proBirdView.h
+    proBirdView.h \
+    line2D.h
 
 

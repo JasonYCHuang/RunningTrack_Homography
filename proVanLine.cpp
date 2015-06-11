@@ -10,7 +10,7 @@
 #include "lib_misc.h"
 #include "lib_math.h"
 #include "proVanLine.h"
-#include "theline.h"
+#include "line2D.h"
 
 #ifndef _CRT_SECURE_NO_WARNINGS
 # define _CRT_SECURE_NO_WARNINGS
@@ -25,7 +25,7 @@ Mat calcVanLineSVDFunc(const vector<Point2f> &pts, Mat &img, string title, const
     Mat A, U, D, VT, V;
 
     // Convert points to lines, and create A matrix by vanishing-line equations using DLT formulas.
-    vector<TheLine> line(pts.size()/2);
+    vector<Line2D> line(pts.size()/2);
     for (unsigned int i=0; i<line.size(); ++i)    {
         line[i].setLineParam(pts[i*2], pts[i*2+1], (1+i));
         Mat temp1 = (Mat_<double>(1,6) << 0, 0, -line[i].lamb(), -1, line[i].lamb()*line[i].b(), line[i].b());
@@ -147,7 +147,7 @@ void projectVanLine()
 
 void calcVanLineMVGFunc(const vector<Point2f> &pts, Mat &img)
 {
-    vector<TheLine> pL(pts.size()/2);
+    vector<Line2D> pL(pts.size()/2);
     for (unsigned int i=0; i<pL.size(); ++i)    {
         pL[i].setLineParam(pts[i*2], pts[i*2+1], (1+i));
     }
