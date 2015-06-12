@@ -14,10 +14,17 @@ namespace constant
     const double  TO_DEG = 180/PI;
 }
 
+double  calcDivision(const double numerator, const double denominator);
+Mat     getRotationMatrix(double alpha, double beta, double gamma);
+double  getMax(const double a, const double b);
+double  getMin(const double a, const double b);
+double  calcSlope(Point2f pt1, Point2f pt2);
+double  calcIntersect(Point2f pt1, Point2f pt2);
+Mat     calcVanPtsFunc(Mat &src,  const vector<Point2f> pts, string name);
+void    calcRotAngleFunc(const Mat &unit_vector, double &pitch, double &yaw);
 
 
-
-
+// TBD ----------------------------------------------------------
 const Point2f  CAM_CENTER(831, 388);
 const Point2f  IMG_CENTER(831, 388);
 const double  FOCUS_1 = 1000;
@@ -38,21 +45,8 @@ const Mat K = (Mat_<double>(3,3) << FOCUS_1, 0.00*FOCUS_1, CAM_CENTER.x,
 
 
 
-
-//-------------------------------------------------------
-double calcDivision(const double numerator, const double denominator);
-Mat getRotationMatrix(double alpha, double beta, double gamma);
-double getMax(const double a, const double b);
-double getMin(const double a, const double b);
-double calcSlope(Point2f pt1, Point2f pt2);
-double calcIntersect(Point2f pt1, Point2f pt2);
-Mat calcVanPtsFunc(Mat &src,  const vector<Point2f> pts, string name);
-void calcRotAngleFunc(const Mat &unit_vector, double &pitch, double &yaw);
-
-
 //----Legacy function, useless now--------
-double calcProjAngleFunc(const Mat &direction1, const Mat &direction2, const char s);
-Mat calcCurlFunc(const Mat &m1, const Mat &m2);
-
+double  calcProjAngleFunc(const Mat &direction1, const Mat &direction2, const char s);
+Mat     calcCurlFunc(const Mat &m1, const Mat &m2);
 
 #endif // LIB_MATH_H

@@ -43,6 +43,7 @@ HEADERS += \
     proHgBy4Pts.h \
     proHgByFeatures.h \
     proBirdView.h \
-    line2D.h
+    line2D.h \
+    system.h
 
 
