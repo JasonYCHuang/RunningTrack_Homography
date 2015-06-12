@@ -17,6 +17,7 @@ using namespace std;
 #include "proRotByVanPts.h"
 #include "proVanLine.h"
 #include "proBirdView.h"
+#include "system.h"
 
 #ifndef _CRT_SECURE_NO_WARNINGS
 # define _CRT_SECURE_NO_WARNINGS
@@ -48,11 +49,72 @@ char userSelect(bool &ci)
     return is;
 }
 
+// You can use this function to set your camera configuration.
+void writeYAMLConfig()
+{
+    string filename = "camera_config.yaml";
+    FileStorage fs(filename, FileStorage::WRITE);
+
+    // configurations for SportTrack
+    fs << "SportTrack";
+    fs << "{" <<    "focus_u" << 1000.0;
+    fs <<           "focus_v" << 1000.0;
+    fs <<           "center_u" << 831.0;
+    fs <<           "center_v" << 388.0 << "}";
+
+    // configurations for HomeTrack
+    fs << "HomeTrack";
+    fs << "{" <<    "focus_u" << 801.08310;
+    fs <<           "focus_v" << 805.38312;
+    fs <<           "center_u" << 442.21533;
+    fs <<           "center_v" << 284.83506 << "}";
+
+    fs.release();
+}
+
+void readYAMLConfig(System::calibration &params)
+{
+    // Select the track type. // If you don't have multiple track types, you can hide/comment this part.
+    string select_track, track_name = "SportTrack";
+    while( !(select_track=="1" || select_track=="2") ) {
+        cout << "[1]SportTrack? or [2]HomeTrack? input 1 or 2: ";
+        cin >> select_track;
+    }
+    if (select_track=="2")   {
+        track_name = "HomeTrack";
+    }
+
+    // Read the YAML file to get system configurations.
+    string filename = "camera_config.yaml";
+    FileStorage fs(filename, FileStorage::READ);
+    fs.open(filename, FileStorage::READ);
+    FileNode node = fs[track_name];
+    // Set parameters
+    params.fu = (double) node["focus_u"];
+    params.fv = (double) node["focus_v"];
+    params.center = Point2f( (double) node["center_u"],  (double) node["center_v"] );
+    params.resetCameraInternalMatrix();
+    // release the YAML file.
+    fs.release();
+}
+
+
 // Start the main funtion.
 int main()
 {
+    //writeYAMLConfig();      // Uncomment this line if you want to set your own camera configuration.
+
+    // Set camera internal parameters from YAML.
+    System::calibration params;
+    readYAMLConfig(params);
 
 
+
+
+
+
+
+    /*
     char program_select = '0';
     bool brk_token = false, valid_input = true;
     while(!brk_token)    {
@@ -87,6 +149,7 @@ int main()
                 break;
         }
     }
+    */
 
     return 0;
 }

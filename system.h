@@ -16,15 +16,14 @@ public:
     double fu;          // focal length in u-direction.
     double fv;          // focal length in v-direction.
     Point2f center;     // camera center position on the image.
-    Mat K = (Mat_<double>(3,3) << fu, 0.00*fu, center.x,
+    Mat K;              // camera internal matrix.
+
+    void resetCameraInternalMatrix() {
+        K = (Mat_<double>(3,3) << fu, 0.00*fu, center.x,
                                   0,  fv,      center.y,
                                   0,  0,            1);     // camera internal matrix.
-    calibration () {
-      fu  = 1000;
-      fv  = 1000;
-      center = (831, 388);
     }
   };
-}
+};
 #endif // SYSTEM
 
