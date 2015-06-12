@@ -22,43 +22,37 @@ using namespace std;
 
 Line2D::Line2D()
 {
-    // y=mx+d
-    slope = 0.0;
-    intercept = 0.0;
-    lineVector = (Mat_<double>(3,1) << 0, 1, 0);    // Default initialized as y=0.
+    Point2f pt1(1, 1), pt2(2, 1);   // Default initialization.
+    setLineParams(pt1, pt2, 0);
 }
 
 Line2D::Line2D(const Point2f pt1, const Point2f pt2)
 {
-    slope = calcSlope(pt1, pt2);
-    intercept = calcIntersect(pt1, pt2);
-    // y=mx+d => mx-y+d=0 => ax+by+c=0
-    lineVector = (Mat_<double>(3,1) << slope, -1, intercept);   // m=slope, d=intercept // lineVector=[a, b, c]
+    setLineParams(pt1, pt2, 0);
 }
 
 
-Line2D::Line2D(const Point2f pt1, const Point2f pt2, const int lambda)
+Line2D::Line2D(const Point2f pt1, const Point2f pt2, const int lambda_group)
 {
-    slope = calcSlope(pt1, pt2);
-    intercept = calcIntersect(pt1, pt2);
-    // y=mx+d => mx-y+d=0 => ax+by+c=0
-    lineVector = (Mat_<double>(3,1) << slope, -1, intercept);   // m=slope, d=intercept // lineVector=[a, b, c]
-    lambda = lambda;
+    setLineParams(pt1, pt2, lambda_group);
 }
 
 
-void Line2D::setLineParam(const Point2f pt1, const Point2f pt2, const int lambda)
+void Line2D::setLineParams(const Point2f pt1, const Point2f pt2, const int lambda_group)
 {
+    // Calculate slope and intercept.
     slope = calcSlope(pt1, pt2);
     intercept = calcIntersect(pt1, pt2);
 
-    // y=mx+d => mx-y+d=0 => ax+by+c=0
-    lineVector = (Mat_<double>(3,1) << slope, -1, intercept);   // m=slope, d=intercept // lineVector=[a, b, c]
+    // Normalized: ax+by+1=0, c=1, lineVector=[normalized_a, normalized_b, 1]
+    normalized_a = calcDivision( slope, intercept );
+    normalized_b = calcDivision( -1, intercept);        // TBD: divided by zero.
 
-    // Normalized: ax+by+1=0, c=1, lineVector=[a, b, 1]
-    normalized_a = slope/intercept;
-    normalized_b = -1/intercept;
-    lambda = lambda;
+    // Get line vector=[a, b, 1].     // y=mx+d => mx-y+d=0 => ax+by+c=0 => normalized_a*x+normalized_b*y=1
+    lineVector = (Mat_<double>(3,1) << normalized_a, normalized_b, 1);
+
+    // For parallel lines, ax+by+lambda=0, lambda=continuous integer.
+    lambda = lambda_group;      // If we don' consider parallel lines, lambda will be set as 0.
 }
 
 Mat Line2D::vect()

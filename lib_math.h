@@ -40,6 +40,7 @@ const Mat K = (Mat_<double>(3,3) << FOCUS_1, 0.00*FOCUS_1, CAM_CENTER.x,
 
 
 //-------------------------------------------------------
+double calcDivision(const double numerator, const double denominator);
 Mat getRotationMatrix(double alpha, double beta, double gamma);
 double getMax(const double a, const double b);
 double getMin(const double a, const double b);

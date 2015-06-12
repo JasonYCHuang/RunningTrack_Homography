@@ -53,7 +53,6 @@ int main()
 {
 
 
-    /*
     char program_select = '0';
     bool brk_token = false, valid_input = true;
     while(!brk_token)    {
@@ -88,7 +87,6 @@ int main()
                 break;
         }
     }
-    */
 
     return 0;
 }

@@ -27,7 +27,7 @@ Mat calcVanLineSVDFunc(const vector<Point2f> &pts, Mat &img, string title, const
     // Convert points to lines, and create A matrix by vanishing-line equations using DLT formulas.
     vector<Line2D> line(pts.size()/2);
     for (unsigned int i=0; i<line.size(); ++i)    {
-        line[i].setLineParam(pts[i*2], pts[i*2+1], (1+i));
+        line[i].setLineParams(pts[i*2], pts[i*2+1], (1+i));
         Mat temp1 = (Mat_<double>(1,6) << 0, 0, -line[i].lamb(), -1, line[i].lamb()*line[i].b(), line[i].b());
         Mat temp2 = (Mat_<double>(1,6) << line[i].lamb(), 1, 0, 0, -line[i].lamb()*line[i].a(), -line[i].a());
         A.push_back(temp1);

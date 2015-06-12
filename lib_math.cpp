@@ -20,6 +20,14 @@ using namespace cv;
 using namespace std;
 
 //-------------------------------------------------------
+double calcDivision(const double numerator, const double denominator)   // Simple division, and we can use this as error handling.
+{
+    // TBD: divided by zero.
+    return numerator/denominator;
+}
+
+
+
 Mat getRotationMatrix(double alpha, double beta, double gamma)
 {
     Mat R_pitch = (Mat_<double>(3, 3) << 1,  0,         0,
@@ -59,23 +67,13 @@ double getMin(const double a, const double b)
 
 double calcSlope(Point2f pt1, Point2f pt2)
 {
-    double slope;
-    if (pt2.x == pt1.x){
-        slope = 999999999.0;        //workaround: prevent divided by 0.   //TBD: token needed.
-    }else    {
-        slope = (pt2.y - pt1.y)/(pt2.x - pt1.x);
-    }
+    double slope = calcDivision((pt2.y - pt1.y), (pt2.x - pt1.x));
     return slope;
 }
 
 double calcIntersect(Point2f pt1, Point2f pt2)
 {
-    double intersect;
-    if (pt2.x == pt1.x) {
-        intersect = 999999999.0;        //workaround: prevent divided by 0.   //TBD: token needed.
-    }else   {
-        intersect = (pt2.x*pt1.y - pt1.x*pt2.y)/(pt2.x - pt1.x);
-    }
+    double intersect = calcDivision((pt2.x*pt1.y - pt1.x*pt2.y), (pt2.x - pt1.x));
     return intersect;
 }
 
@@ -94,8 +92,8 @@ Mat calcVanPtsFunc(Mat &src,  const vector<Point2f> pts, string name)
     } // need to protect divided by 0  TBD
     //=====Calc vanishing point=====
     Point2f vPoint;
-    vPoint.x = (b[1]-b[0])/(m[0]-m[1]);
-    vPoint.y = (b[1]*m[0]-b[0]*m[1])/(m[0]-m[1]);
+    vPoint.x = calcDivision( (b[1]-b[0]), (m[0]-m[1]) );
+    vPoint.y = calcDivision( (b[1]*m[0]-b[0]*m[1]), (m[0]-m[1]) );
 
     drawLineFunc( src, pts[1] ,vPoint, 'Y');
     drawLineFunc( src, pts[2] ,vPoint, 'R');
@@ -110,7 +108,7 @@ void calcRotAngleFunc(const Mat &unit_vector, double &pitch, double &yaw)
 {
     Mat u_d1 = unit_vector.clone();
     pitch = asin(-u_d1.at<double>(1,0))*constant::TO_DEG;
-    double tmp_y = u_d1.at<double>(2,0)/cos(pitch*constant::TO_RAD);
+    double tmp_y = calcDivision( u_d1.at<double>(2,0), cos(pitch*constant::TO_RAD) );
     yaw = acos(tmp_y)*constant::TO_DEG;
 }
 
@@ -138,7 +136,7 @@ double calcProjAngleFunc(const Mat &direction1, const Mat &direction2, const cha
         default:
             break;
     }
-    double cos_angle = d1.dot(d2)/norm(d1)/norm(d2);
+    double cos_angle = calcDivision( d1.dot(d2), norm(d1)*norm(d2) );
     double angle = acos(cos_angle)*constant::TO_DEG;
     return angle;
 }
