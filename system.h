@@ -10,7 +10,6 @@ using namespace std;
 class System {
 
 public:
-
   // camera parameters
   struct calibration {
     double fu;          // focal length in u-direction.
@@ -24,6 +23,7 @@ public:
                                   0,  0,            1);     // camera internal matrix.
     }
   };
+
 };
 #endif // SYSTEM
 

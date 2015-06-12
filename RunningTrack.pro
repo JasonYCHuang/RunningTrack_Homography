@@ -12,7 +12,8 @@ SOURCES += main.cpp \
     proVanLine.cpp \
     proHgByFeatures.cpp \
     proBirdView.cpp \
-    line2D.cpp
+    line2d.cpp \
+    scale_estimation.cpp
 
 unix:LIBS += `pkg-config opencv --libs`
 
@@ -43,7 +44,8 @@ HEADERS += \
     proHgBy4Pts.h \
     proHgByFeatures.h \
     proBirdView.h \
-    line2D.h \
-    system.h
+    system.h \
+    line2d.h \
+    scale_estimation.h
 
 

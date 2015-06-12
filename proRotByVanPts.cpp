@@ -29,12 +29,12 @@ void rotByVarPtsFunc(const string name)
     }
     else    {
         // Draw the camera center
-        drawCenterFunc(img);
+        drawCenter(img);
 
         // Calculate the vanishing point by 4 manual selected pts & Set homogeneous coordinate
         vector<Point2f> selected_pts(4);
-        getPtsLocFunc(img, selected_pts, name);
-        Mat v_track_line    = calcVanPtsFunc(img, selected_pts, name);      //location of the vanishing point on the image.
+        getPtsLoc(img, selected_pts, name);
+        Mat v_track_line    = calcVanPts(img, selected_pts, name);      //location of the vanishing point on the image.
         Mat v_camera_center = (Mat_<double>(3, 1) << CAM_CENTER.x, CAM_CENTER.y, 1); //location of the camera center on the image.
 
         // Camera internal parameter
@@ -74,7 +74,7 @@ void rotByVarPtsFunc(const string name)
 
         // Calculate Pitch, Yaw angles base on Roll=0.
         double pitch, yaw;
-        calcRotAngleFunc(d_track_line, pitch, yaw);   //calc angle from rotation matrix.
+        calcRotAngle(d_track_line, pitch, yaw);   //calc angle from rotation matrix.
         cout << "Assume roll = 0(deg)" << endl;
         cout << "pitch_angle = " << pitch << "(deg)" << endl;
         cout << "yaw_angle   = " << yaw   << "(deg)" << endl;

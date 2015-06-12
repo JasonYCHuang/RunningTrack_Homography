@@ -20,8 +20,8 @@ double  getMax(const double a, const double b);
 double  getMin(const double a, const double b);
 double  calcSlope(Point2f pt1, Point2f pt2);
 double  calcIntersect(Point2f pt1, Point2f pt2);
-Mat     calcVanPtsFunc(Mat &src,  const vector<Point2f> pts, string name);
-void    calcRotAngleFunc(const Mat &unit_vector, double &pitch, double &yaw);
+Mat     calcVanPts(Mat &src,  const vector<Point2f> pts, string name);
+void    calcRotAngle(const Mat &unit_vector, double &pitch, double &yaw);
 
 
 // TBD ----------------------------------------------------------
@@ -46,7 +46,7 @@ const Mat K = (Mat_<double>(3,3) << FOCUS_1, 0.00*FOCUS_1, CAM_CENTER.x,
 
 
 //----Legacy function, useless now--------
-double  calcProjAngleFunc(const Mat &direction1, const Mat &direction2, const char s);
-Mat     calcCurlFunc(const Mat &m1, const Mat &m2);
+double  calcProjAngle(const Mat &direction1, const Mat &direction2, const char s);
+Mat     calcCurl(const Mat &m1, const Mat &m2);
 
 #endif // LIB_MATH_H

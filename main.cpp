@@ -18,6 +18,7 @@ using namespace std;
 #include "proVanLine.h"
 #include "proBirdView.h"
 #include "system.h"
+#include "scale_estimation.h"
 
 #ifndef _CRT_SECURE_NO_WARNINGS
 # define _CRT_SECURE_NO_WARNINGS
@@ -98,6 +99,13 @@ void readYAMLConfig(System::calibration &params)
     fs.release();
 }
 
+string setImageName()
+{
+    string name;
+    cout << "Input the name of the original image: ";
+    cin >> name;
+    return name;
+}
 
 // Start the main funtion.
 int main()
@@ -105,14 +113,32 @@ int main()
     //writeYAMLConfig();      // Uncomment this line if you want to set your own camera configuration.
 
     // Set camera internal parameters from YAML.
-    System::calibration params;
-    readYAMLConfig(params);
+    System::calibration params_yaml;
+    readYAMLConfig(params_yaml);
 
+    // Set the original image
+    string img_name_ori = setImageName();                       // Input the image name.
+    Mat img_ori = imread(img_name_ori, CV_LOAD_IMAGE_COLOR);    // Read the file.
+    Mat img_process = img_ori.clone();
+    while(!img_ori.data && !img_process.data)    {                                   // Check for invalid input.
+        cout <<  " <Incorrect Usage> Could not open or find the image" << endl << endl ;
+        img_name_ori = setImageName();
+        img_ori = imread(img_name_ori, CV_LOAD_IMAGE_COLOR);
+        img_process = img_ori.clone();
+    }
 
+    // Initialized the "SacleEstimation" object.
+    SacleEstimation myApp(params_yaml);
 
+    // Status
+    cout << "Processing: Frame: " << "i" << "-------------------------------------" << endl;
 
-
-
+    // Start to process the image.
+    if (myApp.process(img_process)) {
+        cout << " ... Success!" << endl;
+    }   else    {
+        cout << " ... failed!" << endl;
+    }
 
     /*
     char program_select = '0';

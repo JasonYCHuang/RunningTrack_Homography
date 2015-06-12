@@ -85,7 +85,7 @@ Mat calcVanPtsFunc(Mat &src,  const vector<Point2f> pts, string name)
     for(int i = 0; i<num_pts; i+=2)
     {
         int beg_pts = i, end_pts = i+1;
-        drawLineFunc( src, pts[beg_pts] , pts[end_pts], 'G');
+        drawLine( src, pts[beg_pts] , pts[end_pts], 'G');
         imshow( name, src );
         m[i/2] = calcSlope(pts[beg_pts], pts[end_pts]);
         b[i/2] = calcIntersect(pts[beg_pts], pts[end_pts]);
@@ -95,8 +95,8 @@ Mat calcVanPtsFunc(Mat &src,  const vector<Point2f> pts, string name)
     vPoint.x = calcDivision( (b[1]-b[0]), (m[0]-m[1]) );
     vPoint.y = calcDivision( (b[1]*m[0]-b[0]*m[1]), (m[0]-m[1]) );
 
-    drawLineFunc( src, pts[1] ,vPoint, 'Y');
-    drawLineFunc( src, pts[2] ,vPoint, 'R');
+    drawLine( src, pts[1] ,vPoint, 'Y');
+    drawLine( src, pts[2] ,vPoint, 'R');
     imshow( name, src);
 
     Mat vPointMat = (Mat_<double>(3,1) << vPoint.x, vPoint.y, 1 );

@@ -7,12 +7,12 @@ using namespace cv;
 using namespace std;
 
 //---------------------------------------------------------------------
-Scalar colorVectFunc(char color_name);
-void drawCircleFunc(Mat &img, Point center, char color );           //TBD
-void drawLineFunc(Mat &img, Point2f pt1, Point2f pt2, char color ); //TBD
-void drawCenterFunc(Mat &src);                                      //TBD
-void onMouseFunc(int event, int x, int y, int , void* user_data);
-void imgRotateFunc(Mat &src, Mat &dst, double angle);
-void getPtsLocFunc(Mat &img, vector<Point2f> &pts, const string name );
+Scalar colorVect(char color_name);
+void drawCircle(Mat &img, Point center, char color );           //TBD
+void drawLine(Mat &img, Point2f pt1, Point2f pt2, char color ); //TBD
+void drawCenter(Mat &src);                                      //TBD
+void onMouse(int event, int x, int y, int , void* user_data);
+void imgRotate(Mat &src, Mat &dst, double angle);
+void getPtsLoc(Mat &img, vector<Point2f> &pts, const string name );
 
 #endif // LIB_MISC_H

@@ -10,7 +10,7 @@
 #include "lib_misc.h"
 #include "lib_math.h"
 #include "proVanLine.h"
-#include "line2D.h"
+#include "line2d.h"
 
 #ifndef _CRT_SECURE_NO_WARNINGS
 # define _CRT_SECURE_NO_WARNINGS
@@ -19,7 +19,7 @@
 using namespace cv;
 using namespace std;
 //-------------------------------------------------------
-Mat calcVanLineSVDFunc(const vector<Point2f> &pts, Mat &img, string title, const char color)
+Mat calcVanLineSVD(const vector<Point2f> &pts, Mat &img, string title, const char color)
 {
     // Set Mat for SVD: A=U*D*VT
     Mat A, U, D, VT, V;
@@ -55,7 +55,7 @@ Mat calcVanLineSVDFunc(const vector<Point2f> &pts, Mat &img, string title, const
     two.y += shift;
 
     // Draw the vanishing line
-    drawLineFunc( img, one, two, color );
+    drawLine( img, one, two, color );
     imshow( title, img );
     imwrite( "./vLine.png", img );
 
@@ -76,24 +76,24 @@ void getVanLineFunc(const string name)
 
         // Fetch feature points "manually".
         vector<Point2f> selected_pts(8);
-        getPtsLocFunc(img, selected_pts, name);
+        getPtsLoc(img, selected_pts, name);
         // Picks the fisrt 4 pts for the vanishing point, since we get it from two lines.
         // Need to update VP calculation by using all points!. TBD
         vector<Point2f> selected_pts_for_vp{selected_pts[0], selected_pts[1], selected_pts[2], selected_pts[3]};
 
         // Calculate the vanishing point
-        Mat vanishingPoint = calcVanPtsFunc(img, selected_pts_for_vp, name);
+        Mat vanishingPoint = calcVanPts(img, selected_pts_for_vp, name);
 
         // Calculate and draw the vanishing line
-        Mat vanishingLine = calcVanLineSVDFunc(selected_pts, img, "vLine", 'R');
+        Mat vanishingLine = calcVanLineSVD(selected_pts, img, "vLine", 'R');
 
         /* test
         vector<Point2f> selected_pts_for_5_lines{selected_pts[0], selected_pts[1], selected_pts[2], selected_pts[3], selected_pts[4], selected_pts[5], selected_pts[6], selected_pts[7], selected_pts[8], selected_pts[9]};
         vector<Point2f> selected_pts_for_4_lines{selected_pts[0], selected_pts[1], selected_pts[2], selected_pts[3], selected_pts[4], selected_pts[5], selected_pts[6], selected_pts[7]};
         vector<Point2f> selected_pts_for_3_lines{selected_pts[0], selected_pts[1], selected_pts[2], selected_pts[3], selected_pts[4], selected_pts[5]};
-        Mat vanishingLine5 = calcVanLineSVDFunc(selected_pts_for_5_lines, img, "vLineBy5Lines", 'G');
-        Mat vanishingLine4 = calcVanLineSVDFunc(selected_pts_for_4_lines, img, "vLineBy4Lines", 'B');
-        Mat vanishingLine3 = calcVanLineSVDFunc(selected_pts_for_3_lines, img, "vLineBy3Lines", 'Y');
+        Mat vanishingLine5 = calcVanLineSVD(selected_pts_for_5_lines, img, "vLineBy5Lines", 'G');
+        Mat vanishingLine4 = calcVanLineSVD(selected_pts_for_4_lines, img, "vLineBy4Lines", 'B');
+        Mat vanishingLine3 = calcVanLineSVD(selected_pts_for_3_lines, img, "vLineBy3Lines", 'Y');
         */
 
         // Calculate the surface normal

@@ -23,14 +23,14 @@ void hgTransformFunc(Mat &ori, Mat &ref, Mat &target, Mat &h_matrix, const strin
 {
     int i = 4;   //get 4 pts
     vector<Point2f> pts_vertx_ori(i), pts_vertx_ref(i);
-    getPtsLocFunc(ori, pts_vertx_ori, n1);
-    getPtsLocFunc(ref, pts_vertx_ref, n2);
+    getPtsLoc(ori, pts_vertx_ori, n1);
+    getPtsLoc(ref, pts_vertx_ref, n2);
 
     h_matrix = findHomography(pts_vertx_ori, pts_vertx_ref, 0);
 
     warpPerspective(ori, target, h_matrix, target.size());
 
-    imgRotateFunc(target, target, 0);
+    imgRotate(target, target, 0);
 }
 
 
