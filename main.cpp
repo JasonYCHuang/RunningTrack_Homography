@@ -2,24 +2,13 @@
 #include <sstream>
 #include <stdio.h>
 
-#include <opencv2/core/core.hpp>
-#include <opencv2/imgproc/imgproc.hpp>
-#include <opencv2/calib3d/calib3d.hpp>
-#include <opencv2/highgui/highgui.hpp>
-
-using namespace cv;
-using namespace std;
-
 #include "lib_misc.h"
 #include "lib_math.h"
 #include "system.h"
 #include "scale_estimation.h"
 
-#ifndef _CRT_SECURE_NO_WARNINGS
-# define _CRT_SECURE_NO_WARNINGS
-#endif
-
-
+using namespace cv;
+using namespace std;
 
 // Welcome message for users to select functions.
 char userSelect(bool &ci)

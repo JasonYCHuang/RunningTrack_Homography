@@ -1,9 +1,9 @@
 #ifndef SYSTEM
 #define SYSTEM
 
-#include <opencv2/core/core.hpp>
 #include "lib_misc.h"
 #include "lib_math.h"
+
 using namespace cv;
 using namespace std;
 
