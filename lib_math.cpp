@@ -9,8 +9,6 @@
 
 #include "lib_misc.h"
 #include "lib_math.h"
-#include "proHgBy4Pts.h"
-#include "proRotByVanPts.h"
 
 #ifndef _CRT_SECURE_NO_WARNINGS
 # define _CRT_SECURE_NO_WARNINGS
@@ -104,12 +102,12 @@ Mat calcVanPts(Mat &src,  const vector<Point2f> pts, string name)
     return vPointMat;
 }
 
-void calcRotAngle(const Mat &unit_vector, double &pitch, double &yaw)
+void calcRotAngle(const Mat &unit_vector, double &pitch_deg, double &yaw_deg)
 {
     Mat u_d1 = unit_vector.clone();
-    pitch = asin(-u_d1.at<double>(1,0))*constant::TO_DEG;
-    double tmp_y = calcDivision( u_d1.at<double>(2,0), cos(pitch*constant::TO_RAD) );
-    yaw = acos(tmp_y)*constant::TO_DEG;
+    pitch_deg = asin(-u_d1.at<double>(1,0))*constant::TO_DEG;
+    double tmp_y = calcDivision( u_d1.at<double>(2,0), cos(pitch_deg*constant::TO_RAD) );
+    yaw_deg = acos(tmp_y)*constant::TO_DEG;
 }
 
 

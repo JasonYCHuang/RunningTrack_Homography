@@ -7,10 +7,6 @@ CONFIG += c++11
 SOURCES += main.cpp \
     lib_misc.cpp \
     lib_math.cpp \
-    proHgBy4Pts.cpp \
-    proRotByVanPts.cpp \
-    proHgByFeatures.cpp \
-    proBirdView.cpp \
     line2d.cpp \
     scale_estimation.cpp
 
@@ -38,10 +34,6 @@ win32:LIBS+= C:\Qt\OpenCV249MinGw\lib\libopencv_calib3d249.dll.a\
 HEADERS += \
     lib_misc.h \
     lib_math.h \
-    proRotByVanPts.h \
-    proHgBy4Pts.h \
-    proHgByFeatures.h \
-    proBirdView.h \
     system.h \
     line2d.h \
     scale_estimation.h

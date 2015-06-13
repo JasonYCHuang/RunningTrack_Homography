@@ -9,8 +9,6 @@
 
 #include "lib_misc.h"
 #include "lib_math.h"
-#include "proHgBy4Pts.h"
-#include "proRotByVanPts.h"
 
 #ifndef _CRT_SECURE_NO_WARNINGS
 # define _CRT_SECURE_NO_WARNINGS
@@ -62,14 +60,6 @@ void drawLine( Mat &img, Point2f pt1, Point2f pt2, char color )
     int lineShift = 0;
 
     line(img, pt1, pt2, colorVect(color), thickness, lineType, lineShift );
-}
-
-void drawCenter(Mat &src)
-{
-    drawCircle( src, IMG_CENTER, 'M' );
-    putText(src, "IMG_CENTER", IMG_CENTER, FONT_HERSHEY_PLAIN, 1, colorVect('M'), 2, 8, false);
-    drawCircle( src, CAM_CENTER, 'R' );
-    putText(src, "CAM_CENTER", CAM_CENTER, FONT_HERSHEY_PLAIN, 1, colorVect('R'), 2, 8, false );
 }
 
 void onMouse(int event, int x, int y, int , void *user_data)

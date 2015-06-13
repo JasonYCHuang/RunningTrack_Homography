@@ -12,10 +12,6 @@ using namespace std;
 
 #include "lib_misc.h"
 #include "lib_math.h"
-#include "proHgBy4Pts.h"
-#include "proHgByFeatures.h"
-#include "proRotByVanPts.h"
-#include "proBirdView.h"
 #include "system.h"
 #include "scale_estimation.h"
 
@@ -70,8 +66,8 @@ void writeYAMLConfig()
     fs <<           "center_v" << 284.83506 << "}";
 
     // Settings for processing the bird view.
-    fs << "numLinesForVL" << 4;
-    fs << "numLinesForVP" << 2;
+    fs << "num_lines_for_vline" << 4;
+    fs << "num_lines_for_vpoint" << 2;
 
     fs.release();
 }
@@ -99,8 +95,8 @@ void readYAMLConfig(System::calibration &params_1, System::setting &params_2)
     params_1.center = Point2f( (double) node["center_u"],  (double) node["center_v"] );
     params_1.resetCameraInternalMatrix();
     // Set bird_view parameters
-    params_2.num_lines_for_vline = (int) fs["numLinesForVL"];
-    params_2.num_lines_for_vpoint = (int) fs["numLinesForVP"];
+    params_2.num_lines_for_vline = (int) fs["num_lines_for_vline"];
+    params_2.num_lines_for_vpoint = (int) fs["num_lines_for_vpoint"];
 
     // release the YAML file.
     fs.release();
@@ -117,7 +113,7 @@ string setImageName()
 // Start the main funtion.
 int main()
 {
-    writeYAMLConfig();      // Uncomment this line if you want to set your own camera configuration.
+    //writeYAMLConfig();      // Uncomment this line if you want to set your own camera configuration.
 
     // Set camera internal parameters from YAML.
     System::calibration params_c;
