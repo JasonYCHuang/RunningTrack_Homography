@@ -77,7 +77,7 @@ double calcIntersect(Point2f pt1, Point2f pt2)
     return intersect;
 }
 
-Mat calcVanPtsFunc(Mat &src,  const vector<Point2f> pts, string name)
+Mat calcVanPts(Mat &src,  const vector<Point2f> pts, string name)
 {
     int num_pts = pts.size();
     //=====Calc and draw lines=====
@@ -104,7 +104,7 @@ Mat calcVanPtsFunc(Mat &src,  const vector<Point2f> pts, string name)
     return vPointMat;
 }
 
-void calcRotAngleFunc(const Mat &unit_vector, double &pitch, double &yaw)
+void calcRotAngle(const Mat &unit_vector, double &pitch, double &yaw)
 {
     Mat u_d1 = unit_vector.clone();
     pitch = asin(-u_d1.at<double>(1,0))*constant::TO_DEG;
@@ -116,7 +116,7 @@ void calcRotAngleFunc(const Mat &unit_vector, double &pitch, double &yaw)
 
 
 //----Legacy function, now is useless--------
-double calcProjAngleFunc(const Mat &direction1, const Mat &direction2, const char s)  //useless, kept as backup.
+double calcProjAngle(const Mat &direction1, const Mat &direction2, const char s)  //useless, kept as backup.
 {
     Mat d1 = direction1.clone();
     Mat d2 = direction2.clone();
@@ -141,7 +141,7 @@ double calcProjAngleFunc(const Mat &direction1, const Mat &direction2, const cha
     return angle;
 }
 
-Mat calcCurlFunc(const Mat &m1, const Mat &m2)
+Mat calcCurl(const Mat &m1, const Mat &m2)
 {
     Mat curl = (Mat_<double>(3,1) << m1.at<double>(1,0)*m2.at<double>(2,0) - m1.at<double>(2,0)*m2.at<double>(1,0),
                                      m1.at<double>(2,0)*m2.at<double>(0,0) - m1.at<double>(0,0)*m2.at<double>(2,0),

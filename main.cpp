@@ -15,7 +15,6 @@ using namespace std;
 #include "proHgBy4Pts.h"
 #include "proHgByFeatures.h"
 #include "proRotByVanPts.h"
-#include "proVanLine.h"
 #include "proBirdView.h"
 #include "system.h"
 #include "scale_estimation.h"
@@ -53,7 +52,7 @@ char userSelect(bool &ci)
 // You can use this function to set your camera configuration.
 void writeYAMLConfig()
 {
-    string filename = "camera_config.yaml";
+    string filename = "sport_track_config.yaml";
     FileStorage fs(filename, FileStorage::WRITE);
 
     // configurations for SportTrack
@@ -70,10 +69,14 @@ void writeYAMLConfig()
     fs <<           "center_u" << 442.21533;
     fs <<           "center_v" << 284.83506 << "}";
 
+    // Settings for processing the bird view.
+    fs << "numLinesForVL" << 4;
+    fs << "numLinesForVP" << 2;
+
     fs.release();
 }
 
-void readYAMLConfig(System::calibration &params)
+void readYAMLConfig(System::calibration &params_1, System::setting &params_2)
 {
     // Select the track type. // If you don't have multiple track types, you can hide/comment this part.
     string select_track, track_name = "SportTrack";
@@ -86,15 +89,19 @@ void readYAMLConfig(System::calibration &params)
     }
 
     // Read the YAML file to get system configurations.
-    string filename = "camera_config.yaml";
+    string filename = "sport_track_config.yaml";
     FileStorage fs(filename, FileStorage::READ);
     fs.open(filename, FileStorage::READ);
     FileNode node = fs[track_name];
-    // Set parameters
-    params.fu = (double) node["focus_u"];
-    params.fv = (double) node["focus_v"];
-    params.center = Point2f( (double) node["center_u"],  (double) node["center_v"] );
-    params.resetCameraInternalMatrix();
+    // Set calibration parameters
+    params_1.fu = (double) node["focus_u"];
+    params_1.fv = (double) node["focus_v"];
+    params_1.center = Point2f( (double) node["center_u"],  (double) node["center_v"] );
+    params_1.resetCameraInternalMatrix();
+    // Set bird_view parameters
+    params_2.num_lines_for_vline = (int) fs["numLinesForVL"];
+    params_2.num_lines_for_vpoint = (int) fs["numLinesForVP"];
+
     // release the YAML file.
     fs.release();
 }
@@ -110,11 +117,12 @@ string setImageName()
 // Start the main funtion.
 int main()
 {
-    //writeYAMLConfig();      // Uncomment this line if you want to set your own camera configuration.
+    writeYAMLConfig();      // Uncomment this line if you want to set your own camera configuration.
 
     // Set camera internal parameters from YAML.
-    System::calibration params_yaml;
-    readYAMLConfig(params_yaml);
+    System::calibration params_c;
+    System::setting params_s;
+    readYAMLConfig(params_c, params_s);
 
     // Set the original image
     string img_name_ori = setImageName();                       // Input the image name.
@@ -128,7 +136,7 @@ int main()
     }
 
     // Initialized the "SacleEstimation" object.
-    SacleEstimation myApp(params_yaml);
+    SacleEstimation myApp(params_c, params_s);
 
     // Status
     cout << "Processing: Frame: " << "i" << "-------------------------------------" << endl;
@@ -139,6 +147,7 @@ int main()
     }   else    {
         cout << " ... failed!" << endl;
     }
+
 
     /*
     char program_select = '0';

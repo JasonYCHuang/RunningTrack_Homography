@@ -1,6 +1,7 @@
 #ifndef LIB_MATH_H
 #define LIB_MATH_H
 
+#include "lib_misc.h"
 #include <opencv2/core/core.hpp>
 
 using namespace cv;

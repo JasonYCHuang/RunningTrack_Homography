@@ -20,7 +20,7 @@ using namespace cv;
 using namespace std;
 
 //------------------------------------------------------------------------
-Scalar colorVectFunc(const char color_name)
+Scalar colorVect(const char color_name)
 {
     Scalar colorVector = Scalar( 0, 0, 0 );
     switch (color_name)   {
@@ -48,31 +48,31 @@ Scalar colorVectFunc(const char color_name)
 
 
 
-void drawCircleFunc( Mat &img, Point center, char color )
+void drawCircle( Mat &img, Point center, char color )
 {
     int thickness = 2;
     int lineType = 8;
-    circle(img, center, 5, colorVectFunc(color), thickness, lineType );
+    circle(img, center, 5, colorVect(color), thickness, lineType );
 }
 
-void drawLineFunc( Mat &img, Point2f pt1, Point2f pt2, char color )
+void drawLine( Mat &img, Point2f pt1, Point2f pt2, char color )
 {
     int thickness = 2;
     int lineType = 8;
     int lineShift = 0;
 
-    line(img, pt1, pt2, colorVectFunc(color), thickness, lineType, lineShift );
+    line(img, pt1, pt2, colorVect(color), thickness, lineType, lineShift );
 }
 
-void drawCenterFunc(Mat &src)
+void drawCenter(Mat &src)
 {
-    drawCircleFunc( src, IMG_CENTER, 'M' );
-    putText(src, "IMG_CENTER", IMG_CENTER, FONT_HERSHEY_PLAIN, 1, colorVectFunc('M'), 2, 8, false);
-    drawCircleFunc( src, CAM_CENTER, 'R' );
-    putText(src, "CAM_CENTER", CAM_CENTER, FONT_HERSHEY_PLAIN, 1, colorVectFunc('R'), 2, 8, false );
+    drawCircle( src, IMG_CENTER, 'M' );
+    putText(src, "IMG_CENTER", IMG_CENTER, FONT_HERSHEY_PLAIN, 1, colorVect('M'), 2, 8, false);
+    drawCircle( src, CAM_CENTER, 'R' );
+    putText(src, "CAM_CENTER", CAM_CENTER, FONT_HERSHEY_PLAIN, 1, colorVect('R'), 2, 8, false );
 }
 
-void onMouseFunc(int event, int x, int y, int , void *user_data)
+void onMouse(int event, int x, int y, int , void *user_data)
 {
     if  ( event == EVENT_LBUTTONDOWN )
     {
@@ -83,7 +83,7 @@ void onMouseFunc(int event, int x, int y, int , void *user_data)
     }
 }
 
-void imgRotateFunc(Mat &src, Mat &dst, double angle)
+void imgRotate(Mat &src, Mat &dst, double angle)
 {
     int length = max(src.cols, src.rows);
     Point2f pt(length/2., length/2.);
@@ -92,20 +92,20 @@ void imgRotateFunc(Mat &src, Mat &dst, double angle)
     warpAffine(src, dst, r, Size(length, length));
 }
 
-void getPtsLocFunc(Mat &img, vector<Point2f> &pts, const string name )
+void getPtsLoc(Mat &img, vector<Point2f> &pts, const string name )
 {
     imshow( name, img );                   // Show image.
     for(auto it = pts.begin(); it != pts.end(); ++it)   {   //=====Get points=====
-        setMouseCallback( name, onMouseFunc, (void*) &*it );   // solve "iterator can not be converted to void*"
+        setMouseCallback( name, onMouse, (void*) &*it );   // solve "iterator can not be converted to void*"
         waitKey(0);
-        drawCircleFunc( img, *it, 'B' );
+        drawCircle( img, *it, 'B' );
         imshow( name, img );
         // //cout << "pts" << *it << endl;
     }
     if(pts.size() == 4)   {
         for(auto it = pts.begin(); it != pts.end(); ++it)   {   //=====Draw lines=====
             auto next = it+1 != pts.end() ? it+1 : pts.begin();
-            drawLineFunc( img, *it , *next, 'G');
+            drawLine( img, *it , *next, 'G');
             imshow( name, img );
         }
     }
@@ -113,7 +113,7 @@ void getPtsLocFunc(Mat &img, vector<Point2f> &pts, const string name )
         for(auto it = pts.begin(); it != pts.end(); ++it)   {   //=====Draw lines=====
             auto next = it+1;
             if( (it-pts.begin())%2 == 0)
-                {   drawLineFunc( img, *it , *next, 'G');   }
+                {   drawLine( img, *it , *next, 'G');   }
             imshow( name, img );
         }
     }

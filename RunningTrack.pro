@@ -9,7 +9,6 @@ SOURCES += main.cpp \
     lib_math.cpp \
     proHgBy4Pts.cpp \
     proRotByVanPts.cpp \
-    proVanLine.cpp \
     proHgByFeatures.cpp \
     proBirdView.cpp \
     line2d.cpp \
@@ -40,7 +39,6 @@ HEADERS += \
     lib_misc.h \
     lib_math.h \
     proRotByVanPts.h \
-    proVanLine.h \
     proHgBy4Pts.h \
     proHgByFeatures.h \
     proBirdView.h \
