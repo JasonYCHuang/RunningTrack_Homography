@@ -10,8 +10,6 @@ double calcDivision(const double numerator, const double denominator)   // Simpl
     return numerator/denominator;
 }
 
-
-
 Mat getRotationMatrix(double alpha, double beta, double gamma)
 {
     Mat R_pitch = (Mat_<double>(3, 3) << 1,  0,         0,

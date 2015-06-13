@@ -37,7 +37,7 @@ private:
     double  intercept;      // d
 
     // ax+by+1=0 => lineVector=[a, b, 1]
-    Mat     lineVector;
+    Mat     line_vector;
 
     // when Normalized, c=1, ax+by+1=0. // lineVector=[a, b, 1]
     double  normalized_a;

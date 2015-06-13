@@ -32,7 +32,7 @@ void Line2D::setLineParams(const Point2f pt1, const Point2f pt2, const int lambd
     normalized_b = calcDivision( -1, intercept);        // TBD: divided by zero.
 
     // Get line vector=[a, b, 1].     // y=mx+d => mx-y+d=0 => ax+by+c=0 => normalized_a*x+normalized_b*y=1
-    lineVector = (Mat_<double>(3,1) << normalized_a, normalized_b, 1);
+    line_vector = (Mat_<double>(3,1) << normalized_a, normalized_b, 1);
 
     // For parallel lines, ax+by+lambda=0, lambda=continuous integer.
     lambda = lambda_group;      // If we don' consider parallel lines, lambda will be set as 0.
@@ -40,7 +40,7 @@ void Line2D::setLineParams(const Point2f pt1, const Point2f pt2, const int lambd
 
 Mat Line2D::vect()
 {
-    return lineVector;
+    return line_vector;
 }
 
 double Line2D::a()

@@ -8,28 +8,29 @@ bool SacleEstimation::process (Mat &img)
 {
     // step1. Calculate the roll angle by the vanishing line.
     Mat img_step_1 = img.clone();
-    double roll_angle_deg = getRollByVanLine(img_step_1);
+    Mat v_point;
+    double roll_angle_deg = getRollByVanLine(img_step_1, v_point);
     waitKey(0);
     destroyAllWindows();
 
     // step2. Rotate image by the roll angle, and the vanishing line is parallel to horizontal.
     Mat img_step_2 = img.clone();
-    Mat img_step_2_transformed;
-    rotateView(img_step_2, img_step_2_transformed, 0, 0, roll_angle_deg, false);
+    Mat img_step_2_horizon;
+    rotateView(img_step_2, img_step_2_horizon, 0, 0, roll_angle_deg, false);
     waitKey(0);
     destroyAllWindows();
 
     // step3. Calculate pitch and yaw angles by the vanishing points.
     double pitch_angle_deg, yaw_angle_deg;
-    Mat img_step_3 = img_step_2_transformed.clone();
-    getPitchYawByVanPoint(img_step_3, pitch_angle_deg, yaw_angle_deg);
+    Mat img_step_3 = img_step_2_horizon.clone();
+    getPitchYawByVanPoint(img_step_3, v_point, pitch_angle_deg, yaw_angle_deg);
     waitKey(0);
     destroyAllWindows();
 
     // step4. Get the bird view base on pitch and yaw angles.
-    Mat img_step_4 = img_step_2_transformed.clone();
-    Mat img_step_4_transformed;
-    rotateView(img_step_4, img_step_4_transformed, pitch_angle_deg-90, yaw_angle_deg, 0, true);
+    Mat img_step_4 = img_step_2_horizon.clone();
+    Mat img_step_4_bird_view;
+    rotateView(img_step_4, img_step_4_bird_view, pitch_angle_deg-90, yaw_angle_deg, 0, true);
     waitKey(0);
     destroyAllWindows();
 
@@ -42,17 +43,14 @@ bool SacleEstimation::process (Mat &img)
 
 // ---------------------------------------------------------------------
 // step3. Calculate pitch and yaw angles by the vanishing points.
-void SacleEstimation::getPitchYawByVanPoint(Mat &img, double &pitch_deg, double &yaw_deg)
+void SacleEstimation::getPitchYawByVanPoint(Mat &img, Mat &v_point, double &pitch_deg, double &yaw_deg)
 {
-    // Calculate the vanishing point by 4 manual selected pts & Set homogeneous coordinate
-    string name = "step3. Calculate pitch and yaw angles by the vanishing points.";
-    vector<Point2f> selected_pts( (this->params_setting.num_lines_for_vpoint)*2 );;
-    getPtsLoc(img, selected_pts, name);
-    Mat v_track_line    = calcVanPts(img, selected_pts, name);      //location of the vanishing point on the image.
-    Mat v_camera_center = (Mat_<double>(3, 1) << this->params_calib.center.x, this->params_calib.center.y, 1); //location of the camera center on the image.
+    // Set homogeneous coordinate of the vanishing point and camera center
+    Mat v_track_line    = v_point;      //location of the vanishing point on the image.
+    Mat v_camera_center = (Mat_<double>(3, 1) << params_calib.center.x, params_calib.center.y, 1); //location of the camera center on the image.
 
     // Camera internal parameter
-    Mat K = this->params_calib.K.clone();
+    Mat K = params_calib.K.clone();
     Mat inv_K;
     invert(K, inv_K);
 
@@ -77,8 +75,6 @@ void SacleEstimation::getPitchYawByVanPoint(Mat &img, double &pitch_deg, double 
 
     // Calculate Pitch, Yaw angles base on Roll=0.
     calcRotAngle(d_track_line, pitch_deg, yaw_deg);   //calc angle from rotation matrix.
-
-    imwrite( "./vPoint.jpg", img );
 }
 
 
@@ -86,13 +82,13 @@ void SacleEstimation::getPitchYawByVanPoint(Mat &img, double &pitch_deg, double 
 // step2. Rotate image by the roll angle, and the vanishing line is parallel to horizontal.
 // step4. Get the bird view base on pitch and yaw angles.
 
-void SacleEstimation::rotateView(Mat &img_ori, Mat &img_transformed, double pitch, double yaw, double roll, bool is_bird_view)
+void SacleEstimation::rotateView(Mat &img_ori, Mat &img_transformed, double pitch_deg, double yaw_deg, double roll_deg, bool is_bird_view)
 {
     // Setting the rotation Matrix  // getRotationMatrix(yaw, pitch, roll)
-    Mat R = getRotationMatrix(yaw*constant::TO_RAD, pitch*constant::TO_RAD, roll*constant::TO_RAD);
+    Mat R = getRotationMatrix(yaw_deg*constant::TO_RAD, pitch_deg*constant::TO_RAD, roll_deg*constant::TO_RAD);
 
     // Homography matrix calculated from pure rotation.
-    Mat K = this->params_calib.K.clone();
+    Mat K = params_calib.K.clone();
     Mat H = K*R*K.inv();
 
     // create the image with rotation.
@@ -114,10 +110,10 @@ void SacleEstimation::rotateView(Mat &img_ori, Mat &img_transformed, double pitc
     Mat shift;
     Size new_img_size;
     if (is_bird_view)   {
-        shift = (Mat_<double>(3, 3) << 1, 0, -(img_corners_transformed[2].x-boundary["width"]/2),
-                                       0, 1, -(img_corners_transformed[2].y-boundary["height"]*0.80),
+        shift = (Mat_<double>(3, 3) << 1, 0, -(img_corners_transformed[2].x-boundary["width"]*0.7),
+                                       0, 1, -(img_corners_transformed[2].y-boundary["height"]*1.3),
                                        0, 0, 1);
-        new_img_size = Size(boundary["width"], boundary["height"]*0.80);
+        new_img_size = Size(boundary["width"]*1.2, boundary["height"]*1.3);
     } else  {
         shift = (Mat_<double>(3, 3) << 1, 0, -boundary["left"],
                                        0, 1, -boundary["top"],
@@ -129,11 +125,19 @@ void SacleEstimation::rotateView(Mat &img_ori, Mat &img_transformed, double pitc
     // Perspective transformation.
     warpPerspective(img_ori, img_transformed, H, new_img_size);
 
-    // Display and save images
-    string name_rotated_view = "Rotated View";
-    namedWindow( name_rotated_view, CV_WINDOW_NORMAL | CV_WINDOW_KEEPRATIO );
-    imshow( name_rotated_view, img_transformed );
-    imwrite( "./rotated.jpg", img_transformed );
+    if (is_bird_view)   {
+        // Display and save images
+        string name_bird_view = "Step4. Bird View";
+        namedWindow( name_bird_view, CV_WINDOW_NORMAL | CV_WINDOW_KEEPRATIO );
+        imshow( name_bird_view, img_transformed );
+        imwrite( "./birdView.jpg", img_transformed );
+    }   else    {
+        // Display and save images
+        string name_rotated_view = "Step2. Rotated View";
+        namedWindow( name_rotated_view, CV_WINDOW_NORMAL | CV_WINDOW_KEEPRATIO );
+        imshow( name_rotated_view, img_transformed );
+        imwrite( "./rotated.jpg", img_transformed );
+    }
 }
 
 map<string, double> SacleEstimation::getBoundary(const vector<Point2f> &corners)
@@ -161,39 +165,39 @@ map<string, double> SacleEstimation::getBoundary(const vector<Point2f> &corners)
 
 // ---------------------------------------------------------------------
 // step1. Calculate the roll angle by the vanishing line.
-double SacleEstimation::getRollByVanLine(Mat &img)
+double SacleEstimation::getRollByVanLine(Mat &img, Mat &v_point)
 {
     string name = "step1. Calculate the roll angle by the vanishing line.";
     // Fetch feature points "manually".
-    vector<Point2f> selected_pts( (this->params_setting.num_lines_for_vline)*2 );
+    vector<Point2f> selected_pts( (params_setting.num_lines_for_vline)*2 );
     getPtsLoc(img, selected_pts, name);
     // Picks the fisrt 4 pts for the vanishing point, since we get it from two lines.
     // Need to update VP calculation by using all points!. TBD
-    vector<Point2f> selected_pts_for_vp{selected_pts[0], selected_pts[1], selected_pts[2], selected_pts[3]};
+    vector<Point2f> selected_pts_for_vp{selected_pts[2], selected_pts[3], selected_pts[4], selected_pts[5]};
 
     // Calculate the vanishing point
-    Mat vanishing_point = calcVanPts(img, selected_pts_for_vp, name);
+    v_point = calcVanPts(img, selected_pts_for_vp, name);
 
     // Calculate and draw the vanishing line
-    double roll_angle_deg;
-    Mat vanishing_line = calcVanLineSVD(selected_pts, img, "vLine", 'R', roll_angle_deg);
+    double roll_deg;
+    Mat v_line = calcVanLineSVD(selected_pts, img, "vLine", 'R', roll_deg);
 
     // Calculate the surface normal
-    Mat K = this->params_calib.K.clone();
-    Mat N = (K.t())*(vanishing_line);
+    Mat K = params_calib.K.clone();
+    Mat N = (K.t())*(v_line);
     N = N/norm(N);
     // //cout << "normal" << N << endl << endl;
 
     // Calculate the rotaion matrix base on MVA2011 IAPR Conference "An efficient algorithm for UAV indoor pose estimation using vanishing geometry".
     Mat R1, R2, R3;
-    R1 = (K.inv()) * vanishing_point / norm( (K.inv())*vanishing_point );
-    R3 = (K.t()) * vanishing_line / norm( (K.t())*vanishing_line );
+    R1 = (K.inv()) * v_point / norm( (K.inv())*v_point );
+    R3 = (K.t()) * v_line / norm( (K.t())*v_line );
     R2 = R1.cross(R3);
 
-    return roll_angle_deg;
+    return roll_deg;
 }
 
-Mat SacleEstimation::calcVanLineSVD(const vector<Point2f> &pts, Mat &img, string title, const char color, double &roll_angle_deg)
+Mat SacleEstimation::calcVanLineSVD(const vector<Point2f> &pts, Mat &img, string title, const char color, double &roll_deg)
 {
     // Set Mat for SVD: A=U*D*VT
     Mat A, U, D, VT, V;
@@ -232,8 +236,8 @@ Mat SacleEstimation::calcVanLineSVD(const vector<Point2f> &pts, Mat &img, string
     drawLine( img, one, two, color );
     imshow( title, img );
     imwrite( "./vLine.png", img );
-    roll_angle_deg = -(v_line.at<double>(0,0) / v_line.at<double>(1,0))*constant::TO_DEG;
-    //cout << "roll(deg): " << roll_angle_deg;
+    roll_deg = -(v_line.at<double>(0,0) / v_line.at<double>(1,0))*constant::TO_DEG;
+    //cout << "roll(deg): " << roll_deg;
 
     return v_line;
 }

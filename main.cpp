@@ -10,42 +10,33 @@
 using namespace cv;
 using namespace std;
 
-// Welcome message for users to select functions.
-char userSelect(bool &ci)
-{
-    if (ci)     {   // Normal condition.
-        cout << "---------------------------------------------------------------" << endl;
-        cout << "[1] Homography transformation from 4-random-points of 2 images." << endl;
-        cout << "[2] Homography transformation from 4-vertex to fit into a rectangle." << endl;
-        cout << "[3] Homography transformation of lines." << endl;
-        cout << "[4] Rotation matrix from vanishing points." << endl;
-        cout << "[5] Get roll angle from a vanishing line." << endl;
-        cout << "[6] Homography transformation from feature points" << endl;
-        cout << "[7] Get the birdView image" << endl;
-        cout << "-----Input a number or '0' to terminate the program-----" << endl;
-    }
-    else    {       // The user didn't type a valid input.
-        cout << endl << endl << "--- Invalid input! ---" << endl;
-        ci = true;
-    }
-    char is;
-    cin >> is;
-
-    return is;
-}
-
 // You can use this function to set your camera configuration.
 void writeYAMLConfig()
 {
-    string filename = "sport_track_config.yaml";
-    FileStorage fs(filename, FileStorage::WRITE);
+    string file_name = "sport_track_config.yaml";
+    FileStorage fs(file_name, FileStorage::WRITE);
 
+    /*
     // configurations for SportTrack
     fs << "SportTrack";
     fs << "{" <<    "focus_u" << 1000.0;
     fs <<           "focus_v" << 1000.0;
     fs <<           "center_u" << 831.0;
     fs <<           "center_v" << 388.0 << "}";
+
+    // configurations for SportTrack
+    fs << "SportTrack";
+    fs << "{" <<    "focus_u" << 682.504;
+    fs <<           "focus_v" << 682.504;
+    fs <<           "center_u" << 747.0;
+    fs <<           "center_v" << 350.0 << "}";
+    */
+    // configurations for SportTrack
+    fs << "SportTrack";
+    fs << "{" <<    "focus_u" << 682.504;
+    fs <<           "focus_v" << 682.504;
+    fs <<           "center_u" << 747.0;
+    fs <<           "center_v" << 350.0 << "}";
 
     // configurations for HomeTrack
     fs << "HomeTrack";
@@ -55,7 +46,7 @@ void writeYAMLConfig()
     fs <<           "center_v" << 284.83506 << "}";
 
     // Settings for processing the bird view.
-    fs << "num_lines_for_vline" << 4;
+    fs << "num_lines_for_vline"  << 3;
     fs << "num_lines_for_vpoint" << 2;
 
     fs.release();
@@ -74,9 +65,9 @@ void readYAMLConfig(System::calibration &params_1, System::setting &params_2)
     }
 
     // Read the YAML file to get system configurations.
-    string filename = "sport_track_config.yaml";
-    FileStorage fs(filename, FileStorage::READ);
-    fs.open(filename, FileStorage::READ);
+    string file_name = "sport_track_config.yaml";
+    FileStorage fs(file_name, FileStorage::READ);
+    fs.open(file_name, FileStorage::READ);
     FileNode node = fs[track_name];
     // Set calibration parameters
     params_1.fu = (double) node["focus_u"];
@@ -102,7 +93,7 @@ string setImageName()
 // Start the main funtion.
 int main()
 {
-    //writeYAMLConfig();      // Uncomment this line if you want to set your own camera configuration.
+    writeYAMLConfig();      // Uncomment this line if you want to set your own camera configuration.
 
     // Set camera internal parameters from YAML.
     System::calibration params_c;
@@ -113,7 +104,7 @@ int main()
     string img_name_ori = setImageName();                       // Input the image name.
     Mat img_ori = imread(img_name_ori, CV_LOAD_IMAGE_COLOR);    // Read the file.
     Mat img_process = img_ori.clone();
-    while(!img_ori.data && !img_process.data)    {                                   // Check for invalid input.
+    while(!img_ori.data || !img_process.data)    {              // Check for invalid input.
         cout <<  " <Incorrect Usage> Could not open or find the image" << endl << endl ;
         img_name_ori = setImageName();
         img_ori = imread(img_name_ori, CV_LOAD_IMAGE_COLOR);
@@ -123,7 +114,7 @@ int main()
     // Initialized the "SacleEstimation" object.
     SacleEstimation myApp(params_c, params_s);
 
-    // Status
+    // Status   TBD
     cout << "Processing: Frame: " << "i" << "-------------------------------------" << endl;
 
     // Start to process the image.
@@ -132,44 +123,6 @@ int main()
     }   else    {
         cout << " ... failed!" << endl;
     }
-
-
-    /*
-    char program_select = '0';
-    bool brk_token = false, valid_input = true;
-    while(!brk_token)    {
-        program_select = userSelect(valid_input);
-        switch (program_select) {
-            case '1':
-                projectHgTra4Pts();
-                break;
-            case '2':
-                cout << "TBD!" << endl;
-                break;
-            case '3':
-                cout << "TBD!" << endl;
-                break;
-            case '4':
-                projectRotByVanPts();
-                break;
-            case '5':
-                projectVanLine();
-                break;
-            case '6':
-                projectHgByFeatures();
-                break;
-            case '7':
-                proBirdView();
-                break;
-            case '0':
-                brk_token = true;   // terminate the program.
-                break;
-            default:
-                valid_input = false;
-                break;
-        }
-    }
-    */
 
     return 0;
 }
