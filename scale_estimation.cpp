@@ -1,5 +1,7 @@
 #include "scale_estimation.h"
 
+using namespace cv;
+
 SacleEstimation::SacleEstimation (calibration params_1, setting params_2) : params_calib(params_1), params_setting(params_2)  {}
 
 SacleEstimation::~SacleEstimation() {}
@@ -22,8 +24,7 @@ bool SacleEstimation::process (Mat &img)
 
     // step3. Calculate pitch and yaw angles by the vanishing points.
     double pitch_angle_deg, yaw_angle_deg;
-    Mat img_step_3 = img_step_2_horizon.clone();
-    getPitchYawByVanPoint(img_step_3, v_point, pitch_angle_deg, yaw_angle_deg);
+    getPitchYawByVanPoint(v_point, pitch_angle_deg, yaw_angle_deg);
     waitKey(0);
     destroyAllWindows();
 
@@ -43,7 +44,7 @@ bool SacleEstimation::process (Mat &img)
 
 // ---------------------------------------------------------------------
 // step3. Calculate pitch and yaw angles by the vanishing points.
-void SacleEstimation::getPitchYawByVanPoint(Mat &img, Mat &v_point, double &pitch_deg, double &yaw_deg)
+void SacleEstimation::getPitchYawByVanPoint(Mat &v_point, double &pitch_deg, double &yaw_deg)
 {
     // Set homogeneous coordinate of the vanishing point and camera center
     Mat v_track_line    = v_point;      //location of the vanishing point on the image.
@@ -203,11 +204,11 @@ Mat SacleEstimation::calcVanLineSVD(const vector<Point2f> &pts, Mat &img, string
     Mat A, U, D, VT, V;
 
     // Convert points to lines, and create A matrix by vanishing-line equations using DLT formulas.
-    vector<Line2D> line(pts.size()/2);
-    for (unsigned int i=0; i<line.size(); ++i)    {
-        line[i].setLineParams(pts[i*2], pts[i*2+1], (1+i));
-        Mat temp1 = (Mat_<double>(1,6) << 0, 0, -line[i].lamb(), -1, line[i].lamb()*line[i].b(), line[i].b());
-        Mat temp2 = (Mat_<double>(1,6) << line[i].lamb(), 1, 0, 0, -line[i].lamb()*line[i].a(), -line[i].a());
+    vector<Line2D> track_line(pts.size()/2);
+    for (unsigned int i=0; i<track_line.size(); ++i)    {
+        track_line[i].setLineParams(pts[i*2], pts[i*2+1], (1+i));
+        Mat temp1 = (Mat_<double>(1,6) << 0, 0, -track_line[i].lamb(), -1, track_line[i].lamb()*track_line[i].b(), track_line[i].b());
+        Mat temp2 = (Mat_<double>(1,6) << track_line[i].lamb(), 1, 0, 0, -track_line[i].lamb()*track_line[i].a(), -track_line[i].a());
         A.push_back(temp1);
         A.push_back(temp2);
     }
@@ -233,7 +234,7 @@ Mat SacleEstimation::calcVanLineSVD(const vector<Point2f> &pts, Mat &img, string
     two.y += shift;
 
     // Draw the vanishing line
-    drawLine( img, one, two, color );
+    line(img, one, two, colorScalar(color), 1, 8, 0);
     imshow( title, img );
     imwrite( "./vLine.png", img );
     roll_deg = -(v_line.at<double>(0,0) / v_line.at<double>(1,0))*constant::TO_DEG;

@@ -30,7 +30,7 @@ private:
     map<string, double> getBoundary(const vector<Point2f> &corners);
 
     // step3. Calculate pitch and yaw angles by the vanishing points.
-    void getPitchYawByVanPoint(Mat &img, Mat &v_point, double &pitch_deg, double &yaw_deg);
+    void getPitchYawByVanPoint(Mat &v_point, double &pitch_deg, double &yaw_deg);
 };
 
 #endif // SCALE_ESTIMATION_H

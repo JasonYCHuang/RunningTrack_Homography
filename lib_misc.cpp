@@ -4,48 +4,30 @@ using namespace cv;
 using namespace std;
 
 //------------------------------------------------------------------------
-Scalar colorVect(const char color_name)
+Scalar colorScalar(const char color_name)
 {
-    Scalar colorVector = Scalar( 0, 0, 0 );
+    Scalar colorScalar = Scalar( 0, 0, 0 );
     switch (color_name)   {
         case 'R' :
-            colorVector = Scalar( 0, 0, 255 );
+            colorScalar = Scalar( 0, 0, 255 );
             break;
         case 'G' :
-            colorVector = Scalar( 0, 255, 0 );
+            colorScalar = Scalar( 0, 255, 0 );
             break;
         case 'B' :
-            colorVector = Scalar( 255, 0, 0 );
+            colorScalar = Scalar( 255, 0, 0 );
             break;
         case 'M' :
-            colorVector = Scalar( 255, 0, 255 );
+            colorScalar = Scalar( 255, 0, 255 );
             break;
         case 'Y' :
-            colorVector = Scalar( 0, 255, 255 );
+            colorScalar = Scalar( 0, 255, 255 );
             break;
         case 'K' :
-            colorVector = Scalar( 0, 0, 0 );
+            colorScalar = Scalar( 0, 0, 0 );
             break;
     }
-    return colorVector;
-}
-
-
-
-void drawCircle( Mat &img, Point center, char color )
-{
-    int thickness = 2;
-    int lineType = 8;
-    circle(img, center, 5, colorVect(color), thickness, lineType );
-}
-
-void drawLine( Mat &img, Point2f pt1, Point2f pt2, char color )
-{
-    int thickness = 2;
-    int lineType = 8;
-    int lineShift = 0;
-
-    line(img, pt1, pt2, colorVect(color), thickness, lineType, lineShift );
+    return colorScalar;
 }
 
 void onMouse(int event, int x, int y, int , void *user_data)
@@ -74,14 +56,14 @@ void getPtsLoc(Mat &img, vector<Point2f> &pts, const string name )
     for(auto it = pts.begin(); it != pts.end(); ++it)   {   //=====Get points=====
         setMouseCallback( name, onMouse, (void*) &*it );   // solve "iterator can not be converted to void*"
         waitKey(0);
-        drawCircle( img, *it, 'B' );
+        circle(img, *it, 5, colorScalar('B'), 2, 8, 0);
         imshow( name, img );
         // //cout << "pts" << *it << endl;
     }
     if(pts.size() == 4)   {
         for(auto it = pts.begin(); it != pts.end(); ++it)   {   //=====Draw lines=====
             auto next = it+1 != pts.end() ? it+1 : pts.begin();
-            drawLine( img, *it , *next, 'G');
+            line(img, *it, *next, colorScalar('G'), 1, 8, 0);
             imshow( name, img );
         }
     }
@@ -89,7 +71,7 @@ void getPtsLoc(Mat &img, vector<Point2f> &pts, const string name )
         for(auto it = pts.begin(); it != pts.end(); ++it)   {   //=====Draw lines=====
             auto next = it+1;
             if( (it-pts.begin())%2 == 0)
-                {   drawLine( img, *it , *next, 'G');   }
+                {   line(img, *it, *next, colorScalar('G'), 1, 8, 0);   }
             imshow( name, img );
         }
     }
