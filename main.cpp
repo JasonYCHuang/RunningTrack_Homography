@@ -90,10 +90,9 @@ string setImageName()
     return name;
 }
 
-// Start the main funtion.
-int main()
+void proBirdView()
 {
-    writeYAMLConfig();      // Uncomment this line if you want to set your own camera configuration.
+    //writeYAMLConfig();      // Uncomment this line if you want to set your own camera configuration.
 
     // Set camera internal parameters from YAML.
     System::calibration params_c;
@@ -123,6 +122,14 @@ int main()
     }   else    {
         cout << " ... failed!" << endl;
     }
+
+}
+
+
+// Start the main funtion.
+int main()
+{
+    proBirdView();
 
     return 0;
 }
