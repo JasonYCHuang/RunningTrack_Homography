@@ -7,6 +7,9 @@
 #include "system.h"
 #include "scale_estimation.h"
 
+#include "opencv2/highgui/highgui.hpp"
+#include "opencv2/imgproc/imgproc.hpp"
+
 using namespace cv;
 using namespace std;
 
@@ -130,6 +133,172 @@ void proBirdView()
 int main()
 {
     proBirdView();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /*
+
+    // Set the original image
+    string img_name_ori = setImageName();                       // Input the image name.
+    Mat img_ori = imread(img_name_ori, CV_LOAD_IMAGE_COLOR);    // Read the file.
+    Mat img_process = img_ori.clone();
+    while(!img_ori.data || !img_process.data)    {              // Check for invalid input.
+        cout <<  " <Incorrect Usage> Could not open or find the image" << endl << endl ;
+        img_name_ori = setImageName();
+        img_ori = imread(img_name_ori, CV_LOAD_IMAGE_COLOR);
+        img_process = img_ori.clone();
+    }
+
+    string window_name1 = "Original";
+    namedWindow( window_name1, CV_WINDOW_AUTOSIZE );
+    imshow( window_name1, img_process );
+    waitKey(0);
+
+
+    Mat img_detected_edges, img_detected_edges_bgr, img_blur, cdst;
+    blur( img_process, img_blur, Size(3,3) );
+    Canny( img_blur, img_detected_edges, 50, 200, 3);
+
+    string window_name2 = "Canny";
+    namedWindow( window_name2, CV_WINDOW_AUTOSIZE );
+    imshow( window_name2, img_detected_edges );
+    waitKey(0);
+
+
+    string window_name3 = "Hough Transform";
+    namedWindow( window_name3, CV_WINDOW_AUTOSIZE );
+
+    vector<Vec2f> lines;
+    HoughLines(img_detected_edges, lines, 1, CV_PI/180, 300, 0, 0 );
+    cvtColor(img_detected_edges, img_detected_edges_bgr, CV_GRAY2BGR);
+
+    for( size_t i = 0; i < lines.size(); i++ )
+    {
+      float rho = lines[i][0], theta = lines[i][1];
+      Point pt1, pt2;
+      double a = cos(theta), b = sin(theta);
+      double x0 = a*rho, y0 = b*rho;
+      pt1.y = 400;
+      pt1.x = (rho-b*pt1.y)/a;
+      pt2.y = 700;
+      pt2.x = (rho-b*pt2.y)/a;
+      line( img_detected_edges_bgr, pt1, pt2, Scalar(0,0,255), 1, CV_AA);
+    }
+
+
+    imshow( window_name3, img_detected_edges_bgr );
+    waitKey(0);
+
+
+
+    int scale = 1;
+    int delta = 0;
+    int ddepth = CV_16S;
+
+    /// Generate grad_x and grad_y
+    Mat grad_x, grad_y;
+    Mat abs_grad_x, abs_grad_y;
+    Mat grad;
+
+    /// Gradient X
+    //Scharr( src_gray, grad_x, ddepth, 1, 0, scale, delta, BORDER_DEFAULT );
+    Sobel( img_blur, grad_x, ddepth, 1, 0, 3, scale, delta, BORDER_DEFAULT );
+    convertScaleAbs( grad_x, abs_grad_x );
+
+    /// Gradient Y
+    //Scharr( src_gray, grad_y, ddepth, 0, 1, scale, delta, BORDER_DEFAULT );
+    Sobel( img_blur, grad_y, ddepth, 0, 1, 3, scale, delta, BORDER_DEFAULT );
+    convertScaleAbs( grad_y, abs_grad_y );
+
+    /// Total Gradient (approximate)
+    //addWeighted( grad_x, 0.5, abs_grad_y, 0.5, 0, grad );
+
+    Mat grad_deg;
+    grad_deg = Mat::zeros(grad_x.rows, grad_x.cols, CV_16U);
+
+    for(int i = 0; i < grad_x.rows-1; ++i) {
+        for(int j = 0; j < grad_x.cols; ++j) {
+            double directionRAD = atan2(grad_y.at<double>(i,j), grad_x.at<double>(i,j));
+            int directionDEG = (int)(180.0 + directionRAD / M_PI * 180.0);
+            grad_deg.at<int>(i,j) = directionDEG;
+        }
+    }
+
+
+    string window_name3 = "gradient";
+    imshow( window_name3, grad_deg );
+    waitKey(0);
+    */
+
+
+
+
+
+
+
+
+
+
+
+
+    /*
+    string window_name("Canny");
+
+      /// Create a matrix of the same type and size as src (for dst)
+      dst.create( img_process.size(), img_process.type() );
+
+      /// Create a window
+      namedWindow( window_name, CV_WINDOW_AUTOSIZE );
+
+      /// Create a Trackbar for user to enter threshold
+      createTrackbar( "Min Threshold:", window_name, &lowThreshold, max_lowThreshold, CannyThreshold );
+
+      /// Show the image
+      CannyThreshold(0, 0);
+
+      /// Wait until user exit program by pressing a key
+      waitKey(0);
+
+
+
+      void CannyThreshold(int, void*)
+      {
+        /// Reduce noise with a kernel 3x3
+        blur( src_gray, detected_edges, Size(3,3) );
+
+        /// Canny detector
+        Canny( detected_edges, detected_edges, lowThreshold, lowThreshold*ratio, kernel_size );
+
+        /// Using Canny's output as a mask, we display our result
+        dst = Scalar::all(0);
+
+        src.copyTo( dst, detected_edges);
+        imshow( window_name, dst );
+       }
+
+
+
+
+
+
+
+
+
+    */
+
+
 
     return 0;
 }

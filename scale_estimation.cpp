@@ -18,7 +18,7 @@ bool SacleEstimation::process (Mat &img)
     // step2. Rotate image by the roll angle, and the vanishing line is parallel to horizontal.
     Mat img_step_2 = img.clone();
     Mat img_step_2_horizon;
-    rotateView(img_step_2, img_step_2_horizon, 0, 0, roll_angle_deg, false);
+    rotateView(img_step_2, img_step_2_horizon, 0, 0, roll_angle_deg, "Horizon", false);
     waitKey(0);
     destroyAllWindows();
 
@@ -28,12 +28,43 @@ bool SacleEstimation::process (Mat &img)
     waitKey(0);
     destroyAllWindows();
 
-    // step4. Get the bird view base on pitch and yaw angles.
+    // step4. Align to track center, i.e. rotated by yaw angle.
     Mat img_step_4 = img_step_2_horizon.clone();
-    Mat img_step_4_bird_view;
-    rotateView(img_step_4, img_step_4_bird_view, pitch_angle_deg-90, yaw_angle_deg, 0, true);
+    Mat img_step_4_align;
+    rotateView(img_step_4, img_step_4_align, 0, yaw_angle_deg, 0, "Align", false);
     waitKey(0);
     destroyAllWindows();
+
+    // step5. Get the bird view base on pitch angles.
+    Mat img_step_5 = img_step_4_align.clone();
+    Mat img_step_5_bird_view;
+    rotateView(img_step_5, img_step_5_bird_view, (pitch_angle_deg-90), 0, 0, "Bird view", true);
+    waitKey(0);
+    destroyAllWindows();
+
+    /*
+     *     // step3. Calculate pitch and yaw angles by the vanishing points.
+    double pitch_angle_deg, yaw_angle_deg;
+    getPitchYawByVanPoint(v_point, pitch_angle_deg, yaw_angle_deg);
+    waitKey(0);
+    destroyAllWindows();
+
+    // step4. Align to track center, i.e. rotated by yaw angle.
+    Mat img_step_4 = img_step_2_horizon.clone();
+    Mat img_step_4_align;
+    rotateView(img_step_4, img_step_4_align, 0, yaw_angle_deg, 0, "Align", false);
+    waitKey(0);
+    destroyAllWindows();
+
+    // step5. Get the bird view base on pitch angles.
+    Mat img_step_5 = img_step_4_align.clone();
+    Mat img_step_5_bird_view;
+    rotateView(img_step_5, img_step_5_bird_view, (pitch_angle_deg-90), 0, 0, "Bird view", true);
+    waitKey(0);
+    destroyAllWindows();
+
+    */
+
 
     cout << "pitch_angle_deg: " << pitch_angle_deg << endl;
     cout << "yaw_angle_deg: "   << yaw_angle_deg << endl;
@@ -83,7 +114,7 @@ void SacleEstimation::getPitchYawByVanPoint(Mat &v_point, double &pitch_deg, dou
 // step2. Rotate image by the roll angle, and the vanishing line is parallel to horizontal.
 // step4. Get the bird view base on pitch and yaw angles.
 
-void SacleEstimation::rotateView(Mat &img_ori, Mat &img_transformed, double pitch_deg, double yaw_deg, double roll_deg, bool is_bird_view)
+void SacleEstimation::rotateView(Mat &img_ori, Mat &img_transformed, double pitch_deg, double yaw_deg, double roll_deg, string img_name, bool is_bird_view)
 {
     // Setting the rotation Matrix  // getRotationMatrix(yaw, pitch, roll)
     Mat R = getRotationMatrix(yaw_deg*constant::TO_RAD, pitch_deg*constant::TO_RAD, roll_deg*constant::TO_RAD);
@@ -115,30 +146,25 @@ void SacleEstimation::rotateView(Mat &img_ori, Mat &img_transformed, double pitc
                                        0, 1, -(img_corners_transformed[2].y-boundary["height"]*1.3),
                                        0, 0, 1);
         new_img_size = Size(boundary["width"]*1.2, boundary["height"]*1.3);
-    } else  {
+        H = shift*H;    // Update Homography base on a shift, i.e. multiplied by a translation matrix.
+    }
+
+    /* else  {
         shift = (Mat_<double>(3, 3) << 1, 0, -boundary["left"],
                                        0, 1, -boundary["top"],
                                        0, 0, 1);
         new_img_size = Size(boundary["width"], boundary["height"]);
-    }
-    H = shift*H;    // Update Homography base on a shift, i.e. multiplied by a translation matrix.
+        H = shift*H;    // Update Homography base on a shift, i.e. multiplied by a translation matrix.
+
+    }*/
 
     // Perspective transformation.
     warpPerspective(img_ori, img_transformed, H, new_img_size);
 
-    if (is_bird_view)   {
-        // Display and save images
-        string name_bird_view = "Step4. Bird View";
-        namedWindow( name_bird_view, CV_WINDOW_NORMAL | CV_WINDOW_KEEPRATIO );
-        imshow( name_bird_view, img_transformed );
-        imwrite( "./birdView.jpg", img_transformed );
-    }   else    {
-        // Display and save images
-        string name_rotated_view = "Step2. Rotated View";
-        namedWindow( name_rotated_view, CV_WINDOW_NORMAL | CV_WINDOW_KEEPRATIO );
-        imshow( name_rotated_view, img_transformed );
-        imwrite( "./rotated.jpg", img_transformed );
-    }
+    // Display and save images
+    namedWindow( img_name, CV_WINDOW_NORMAL | CV_WINDOW_KEEPRATIO );
+    imshow( img_name, img_transformed );
+    imwrite( "./" + img_name + ".jpg", img_transformed );
 }
 
 map<string, double> SacleEstimation::getBoundary(const vector<Point2f> &corners)

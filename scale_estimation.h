@@ -26,7 +26,7 @@ private:
 
     // step2. Rotate image by the roll angle, and the vanishing line is parallel to horizontal.
     // step4. Get the bird view base on pitch and yaw angles.
-    void rotateView(Mat &img_ori, Mat &img_transformed, double pitch_deg, double yaw_deg, double roll_deg, bool is_bird_view);  // TBD : h_move and v_move are temporary work around to move the image into field of view.
+    void rotateView(Mat &img_ori, Mat &img_transformed, double pitch_deg, double yaw_deg, double roll_deg, string img_name, bool is_bird_view);
     map<string, double> getBoundary(const vector<Point2f> &corners);
 
     // step3. Calculate pitch and yaw angles by the vanishing points.
