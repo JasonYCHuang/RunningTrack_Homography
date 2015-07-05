@@ -52,6 +52,48 @@ void imgRotate(Mat &src, Mat &dst, double angle)
 
 void getPtsLoc(Mat &img, vector<Point2f> &pts, const string name )
 {
+
+    // the1
+    pts.clear();
+    pts.push_back(Point2f(956, 635));
+    pts.push_back(Point2f(926, 490));
+    pts.push_back(Point2f(985, 497));
+    pts.push_back(Point2f(1119, 636));
+    pts.push_back(Point2f(1280, 629));
+    pts.push_back(Point2f(960, 450));
+
+
+ /*
+    // the2
+    pts.clear();
+    pts.push_back(Point2f(938, 771));
+    pts.push_back(Point2f(911, 535));
+    pts.push_back(Point2f(934, 523));
+    pts.push_back(Point2f(1132, 771));
+    pts.push_back(Point2f(1108, 629));
+    pts.push_back(Point2f(1313, 772));
+*/
+    /*
+    // the3
+    pts.clear();
+    pts.push_back(Point2f(855, 772));
+    pts.push_back(Point2f(805, 490));
+    pts.push_back(Point2f(835, 493));
+    pts.push_back(Point2f(1083, 772));
+    pts.push_back(Point2f(843, 480));
+    pts.push_back(Point2f(1325, 772));
+ */
+    for(auto it = pts.begin(); it != pts.end(); ++it)   {   //=====Get points=====
+        //setMouseCallback( name, onMouse, (void*) &*it );   // solve "iterator can not be converted to void*"
+        //waitKey(0);
+        circle(img, *it, 5, colorScalar('B'), 2, 8, 0);
+        imshow( name, img );
+    }
+    waitKey(0);
+
+
+
+    /*
     imshow( name, img );                   // Show image.
     for(auto it = pts.begin(); it != pts.end(); ++it)   {   //=====Get points=====
         setMouseCallback( name, onMouse, (void*) &*it );   // solve "iterator can not be converted to void*"
@@ -75,4 +117,5 @@ void getPtsLoc(Mat &img, vector<Point2f> &pts, const string name )
             imshow( name, img );
         }
     }
+    */
 }
